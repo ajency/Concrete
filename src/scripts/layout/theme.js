@@ -23,3 +23,7 @@ cookieTest('no-cookies', 'cookies');
 // Responsive tables & RTE videos
 responsiveVideos();
 responsiveTables();
+
+$('.hamburger').on('click', function(){
+  $('.menu-list').addClass('d-block');
+});

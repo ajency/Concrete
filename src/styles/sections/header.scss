@@ -2,6 +2,8 @@
   @include prefix(display, flex, webkit ms);
   @include prefix(justify-content, space-between, webkit ms);
   padding: 2rem;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 71px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -23,3 +25,5 @@
     display: inline;
   }
 }
+
+

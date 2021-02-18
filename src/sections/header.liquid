@@ -10,9 +10,10 @@
   Theme Store optional settings
   - Home page only: only shows on the home page
 {%- endcomment -%}
-<section data-section-id="{{ section.id }}" data-section-type="header">
+
+<section data-section-id="{{ section.id }}" data-section-type="header" class="header-section">
   {%- if section.settings.announcement_bar_enabled -%}
-    <div>
+    <div class="container">
       {%- if section.settings.announcement_bar_home_page_only == false or template.name == 'index' -%}
         {%- if section.settings.announcement_bar_link != blank -%}
           <a href="{{ section.settings.announcement_bar_link }}">
@@ -25,96 +26,175 @@
     </div>
   {%- endif -%}
 
-  <header role="banner" class="header">
-    <a href="/" class="logo">
-      {% if section.settings.logo != blank %}
-        {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
-        <img src="{{ section.settings.logo | img_url: image_size }}"
-            srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
-            alt="{{ section.settings.logo.alt | default: shop.name }}">
-      {% else %}
-        {{ shop.name }}
-      {% endif %}
-    </a>
-
-    {% if shop.customer_accounts_enabled %}
-      <ul>
-        {% if customer %}
-          <li>
-            {% if customer.first_name != blank %}
-              {% capture first_name %}<a href="/account">{{ customer.first_name }}</a>{% endcapture %}
-              {{ 'layout.customer.logged_in_as_html' | t: first_name: first_name }}
-            {% else %}
-              <a href="/account">{{ 'layout.customer.account' | t }}</a>
-            {% endif %}
-          </li>
-          <li>
-            {{ 'layout.customer.log_out' | t | customer_logout_link }}
-          </li>
+  <header role="banner" class="header container">
+    <div class="header-left-logo">
+      <div  class="hamburger position-relative">
+        <i class="fa fa-bars" aria-hidden="true"></i>
+      </div>
+      <a href="/" class="logo">
+        {% if section.settings.logo != blank %}
+          {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+          <img src="{{ section.settings.logo | img_url: image_size }}"
+              srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+              alt="{{ section.settings.logo.alt | default: shop.name }}">
         {% else %}
-          <li>
-            {{ 'layout.customer.log_in' | t | customer_login_link }}
-          </li>
-          <li>
-            {{ 'layout.customer.create_account' | t | customer_register_link }}
-          </li>
+          {{ shop.name }}
         {% endif %}
-      </ul>
-    {% endif %}
+      </a>
+    </div>
+    <div class="header-right-logo">
+     
+      <form action="/search" method="get" role="search">
+      <button type="submit" class="search-button">
+        {{ 'search.svg' | asset_url | img_tag: 'search', 'search' }}
+      </button>
+      </form>
+      {% if shop.customer_accounts_enabled %}
+        <span class="account-links">
+        {{ 'user.svg' | asset_url | img_tag: 'user', 'user' }}
+        <ul class="user-account d-none">
+          {% if customer %}
+            <li>
+              {% if customer.first_name != blank %}
+                {% capture first_name %}<a href="/account">{{ customer.first_name }}</a>{% endcapture %}
+                {{ 'layout.customer.logged_in_as_html' | t: first_name: first_name }}
+              {% else %}
+                <a href="/account">{{ 'layout.customer.account' | t }}</a>
+              {% endif %}
+            </li>
+            <li>
+              {{ 'layout.customer.log_out' | t | customer_logout_link }}
+            </li>
+          {% else %}
+            <li>
+              {{ 'layout.customer.log_in' | t | customer_login_link }}
+            </li>
+            <li>
+              {{ 'layout.customer.create_account' | t | customer_register_link }}
+            </li>
+          {% endif %}
+        </ul>
+        </span>
+      {% endif %}
 
-    <a href="/cart">
-      {{ 'layout.cart.title' | t }}
-      (<span data-cart-count>{{ cart.item_count }}</span><span class="visually-hidden"> {{ 'layout.cart.items_count' | t: count: cart.item_count }}</span>)
-    </a>
+      <a href="/cart" class="position-relative">
+        {{ 'cart.svg' | asset_url | img_tag: 'cart', 'cart' }}
+        <div class="cart-count">
+          <span data-cart-count>{{ cart.item_count }}</span><span class="visually-hidden"> {{ 'layout.cart.items_count' | t: count: cart.item_count }}</span>
+        </div>
+      </a>
+    </div>
   </header>
-
-  <nav role="navigation" class="nav">
-    <ul>
-      {% for link in linklists[section.settings.menu].links %}
-        {% if link.links != blank %}
-          <li>
-            <a href="{{ link.url }}">
-              {{ link.title }}
-              {% render 'icon-arrow-down' %}
-            </a>
-            <ul>
-              {% for childlink in link.links %}
+</section>
+    <nav role="navigation" class="nav container menu-list d-none">
+      <div class="menu-links">
+        <a class="link">All Products<span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></a>
+        <a class="close"><span><i class="fa fa-times" aria-hidden="true"></i></span>Close</a>
+      </div>
+      <ul>
+        {% for link in linklists[section.settings.menu].links %}
+          {% if link.links != blank %}
+            <li>
+              <a href="{{ link.url }}">
+                {{ link.title }}
+                {% render 'icon-arrow-down' %}
+              </a>
+              <ul class="submenu">
+                {% for childlink in link.links %}
+                  <li class="child-menu">
+                    <a href="{{ childlink.url }}">
+                      {{ childlink.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% else %}
+            <li>
+              <a href="{{ link.url }}">
+                {{ link.title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+    <div class="mobile-menu">
+        <a href="/" class="logo">
+          {% if section.settings.logo != blank %}
+            {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
+            <img src="{{ section.settings.logo | img_url: image_size }}"
+                srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+                alt="{{ section.settings.logo.alt | default: shop.name }}">
+          {% else %}
+            {{ shop.name }}
+          {% endif %}
+        </a>
+          {% if shop.customer_accounts_enabled %}
+            <span>
+            <span class="account d-block"> {{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }}
+            Login / Register
+            </span>
+            <!-- <ul>
+              {% if customer %}
                 <li>
-                  <a href="{{ childlink.url }}">
-                    {{ childlink.title }}
-                  </a>
+                  {% if customer.first_name != blank %}
+                    {% capture first_name %}<a href="/account">{{ customer.first_name }}</a>{% endcapture %}
+                    {{ 'layout.customer.logged_in_as_html' | t: first_name: first_name }}
+                  {% else %}
+                    <a href="/account">{{ 'layout.customer.account' | t }}</a>
+                  {% endif %}
                 </li>
+                <li>
+                  {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                </li>
+              {% else %}
+                <li>
+                  {{ 'layout.customer.log_in' | t | customer_login_link }}
+                </li>
+                <li>
+                  {{ 'layout.customer.create_account' | t | customer_register_link }}
+                </li>
+              {% endif %}
+            </ul> -->
+            </span>
+          {% endif %}
+
+          <nav role="navigation" class="nav container menu-list menu-list-mobile">
+            <div class="menu-links">
+              <a class="link">All Products</a>
+            </div>
+            <ul class="mweb-mobile-menu">
+              {% for link in linklists[section.settings.menu].links %}
+                {% if link.links != blank %}
+                  <li class="main-child-menu">
+                    <a href="{{ link.url }}">
+                      {{ link.title }}
+                      {% render 'icon-arrow-down' %}
+                    </a>
+                    <ul class="submenu">
+                      {% for childlink in link.links %}
+                        <li class="child-menu">
+                          <a href="{{ childlink.url }}">
+                            {{ childlink.title }}
+                          </a>
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                {% else %}
+                  <li>
+                    <a href="{{ link.url }}">
+                      {{ link.title }}
+                    </a>
+                  </li>
+                {% endif %}
               {% endfor %}
             </ul>
-          </li>
-        {% else %}
-          <li>
-            <a href="{{ link.url }}">
-              {{ link.title }}
-            </a>
-          </li>
-        {% endif %}
-      {% endfor %}
-    </ul>
-
-    <form action="/search" method="get" role="search">
-      <label for="Search-{{ section.id }}" class="label-hidden">
-        {{ 'general.search.placeholder' | t }}
-      </label>
-
-      <input type="search"
-        name="q"
-        id="Search-{{ section.id }}"
-        value="{{ search.terms | escape }}"
-        placeholder="{{ 'general.search.placeholder' | t }}">
-
-      <button type="submit" class="button">
-        {% render 'icon-search' %}
-        <span class="icon-fallback-text">{{ 'general.search.submit' | t }}</span>
-      </button>
-    </form>
-  </nav>
-</section>
+          </nav>
+    </div>
+             <a class="close-icon"><i class="fa fa-times" aria-hidden="true"></i></a>
+   <div class="overlay"></div>
 
 {% if section.settings.logo != blank %}
   <style>
