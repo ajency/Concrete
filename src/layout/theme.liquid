@@ -48,10 +48,10 @@
   </script>
    <!-- icon -->
    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-
-  <!-- Google Fonts -->
-
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+   
+   <!-- Google Fonts -->
+   <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
   <link type="text/css" href="{{ 'theme.css' | asset_url }}" rel="stylesheet">
   <!-- Latest compiled and minified CSS -->
@@ -80,27 +80,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 
   <script type="text/javascript" href="{{ 'theme.js' | asset_url }}" ></script> 
-<script type="text/javascript">
-  
 
-$(document).ready(function() 
-{
-$('.hamburger').on('click', function(){
-  $('.menu-list').removeClass('d-none');
-  $('.menu-list').addClass('d-block');
-});
-$('.close').on('click', function(){
-  $('.menu-list').removeClass('d-block');
-  $('.menu-list').addClass('d-none');
-});
-$('.user').on('click', function(){
-  $('.user-account').toggleClass('d-block d-none');
-});
-$("ul > li.main-child-menu").click(function(){
-    $('.submenu').addClass('d-block');
-    $(this).find(".submenu").slideToggle("slow", function(){});
-});
-});
-</script>
 </body>
 </html>
