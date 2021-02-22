@@ -24,38 +24,38 @@ cookieTest('no-cookies', 'cookies');
 responsiveVideos();
 responsiveTables();
 
+
 $(document).ready(function() 
 {
-    $('.hamburger').on('click', function(){
-      $('.menu-list').removeClass('d-none');
-      $('.menu-list').addClass('d-block');
-    });
-    $('.close').on('click', function(){
-      $('.menu-list').removeClass('d-block');
-      $('.menu-list').addClass('d-none');
-    });
-    $('.hamburger').on('click', function(){
-      $(".mobile-menu").css("left", "0");
-      $("body").css("overflow", "hidden");
-      $('.overlay').removeClass('d-none');
-      $('.overlay').addClass('d-block');
-      $('.close-icon').removeClass('d-none');
-      $('.close-icon').addClass('d-block');
-    });
+$('.hamburger').on('click', function(){
+  $('.menu-list').removeClass('d-none');
+  $('.menu-list').addClass('d-block');
+  $(".mobile-menu").css("left", "0");
+  $('.overlay').removeClass('d-none');
+  $('.overlay').addClass('d-block');
+  $('.close-icon').removeClass('d-none');
+  $('.close-icon').addClass('d-block');
+});
 
-    $('.close-icon').on('click', function(){
-      $(".mobile-menu").css("left", "-325px");
-      $('.overlay').removeClass('d-block');
-      $('.overlay').addClass('d-none');
-      $('.close-icon').removeClass('d-block');
-      $('.close-icon').addClass('d-none');
-    });
-	$('.user').on('click', function(){
-  		$('.user-account').toggleClass('d-block d-none');
-	});
+$('.close').on('click', function(){
+  $('.menu-list').removeClass('d-block');
+  $('.menu-list').addClass('d-none');
+});
 
-	$(".mweb-mobile-menu li.main-child-menu").click(function(){
-    	$("li.main-child-menu").not(this).removeClass("show").children("ul").hide("slow");
-    	$(this).addClass("show").children("ul").show("slow");
-	});
+$('.close-icon').on('click', function(){
+  $(".mobile-menu").css("left", "-325px");
+  $('.overlay').removeClass('d-block');
+  $('.overlay').addClass('d-none');
+  $('.close-icon').removeClass('d-block');
+  $('.close-icon').addClass('d-none');
+});
+
+$('.user').on('click', function(){
+  $('.user-account').toggleClass('d-block d-none');
+});
+
+$(".mweb-mobile-menu li.main-child-menu").click(function(){
+    $("li.main-child-menu").not(this).removeClass("show").children("ul").hide("slow");
+    $(this).addClass("show").children("ul").show("slow");
+});
 });
