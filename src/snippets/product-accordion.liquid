@@ -1,0 +1,71 @@
+    <div class="product-accordion container position-relative accordion-bg">
+      {% if product.metafields.product_meta.details %}
+      <div class="card mb-5">
+        <div class="card-header">
+          <h2 class="mb-0 collapsed py-2 px-5 card-title card-opened">
+            <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-description" aria-expanded="true">
+              Details
+            </button>
+          </h2>
+        </div>
+        <div id="product-description" class="collapse show-card">
+          <div class="card-body py-4 px-5">
+            {{product.metafields.product_meta.details}}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      
+      {% if product.metafields.product_meta.use %}
+      <div class="card my-5">
+        <div class="card-header">
+          <h2 class="collapsed py-2 px-5 card-title card-opened">
+            <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-uses" aria-expanded="true">
+              Suggested Use
+            </button>
+          </h2>
+        </div>
+        <div id="product-uses" class="collapse show-card">
+          <div class="card-body py-4 px-5">
+            {{product.metafields.product_meta.use}}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if product.metafields.product_meta.ingredients %}
+      <div class="card my-5">
+        <div class="card-header">
+          <h2 class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
+            <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-ingredient" aria-expanded="true">
+              Ingredients
+            </button>
+          </h2>
+        </div>
+        <div id="product-ingredient" class="collapse show-card">
+          <div class="card-body py-4 px-5">
+            {{product.metafields.product_meta.ingredients}}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if product.metafields.product_meta.benefits %}
+      <div class="card my-5">
+        <div class="card-header">
+          <h2 class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
+            <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-benefits" aria-expanded="true">
+              Benefits
+            </button>
+          </h2>
+        </div>
+        <div id="product-benefits" class="collapse show-card">
+          <div class="card-body py-4 px-5">
+            {{product.metafields.product_meta.benefits}}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    
+    </div>
+    

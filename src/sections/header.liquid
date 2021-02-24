@@ -43,11 +43,31 @@
         </a>
       </div>
       <div class="header-right-logo">
-        <form action="/search" method="get" role="search">
           <button type="submit" class="search-button" title="Search">
             {{ 'search.svg' | asset_url | img_tag: 'search', 'search' }}
           </button>
-        </form>
+          <div class="position-relative">
+            <div class="search-popup">
+              <form action="/search" method="get" role="search" class="position-relative">
+                <div class="serach-title">
+                  <label for="Search" class="label-hidden search-label">
+                    What are you Looking for?
+                  </label>
+                  <div>
+                    <i class="fa fa-times form-close-icon" aria-hidden="true"></i>
+                  </div>
+                </div>
+                <input type="search"
+                       name="q"
+                       id="Search"
+                       value="{{ search.terms | escape }}"
+                       placeholder="{{ 'general.search.placeholder' | t }}">
+                <button type="submit" class="button search-form-button">
+                  {{ 'search.svg' | asset_url | img_tag: 'search', 'search' }}
+                </button>
+              </form>
+            </div>
+          </div>
         {% if shop.customer_accounts_enabled %}
           <span class="account-links" title="account">
             {{ 'user.svg' | asset_url | img_tag: 'user', 'user' }}
@@ -223,8 +243,8 @@
             {% endif %}
           </nav>
         </div>
-      <a class="close-icon d-none">{{ 'close-icon.svg' | asset_url | img_tag: 'close' }}</a>
-      <div class="overlay d-none"></div>
+      <a class="close-icon">{{ 'close-icon.svg' | asset_url | img_tag: 'close' }}</a>
+      <div class="overlay"></div>
     </header>
   </section>
 

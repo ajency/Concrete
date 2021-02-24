@@ -1,0 +1,32 @@
+{% if product.metafields.product_meta.faq %}
+<div class="product-faq">
+  <div class="header-title">
+    <h2 class="title">Frequently Asked <br><span>Questions</span></h2>
+  </div>
+  <hr class="seperator">
+  <div class="product-faq-content row">
+	{% assign faq_items = product.metafields.product_meta.faq | split: "<h4>" %}
+    {% for faq_item in faq_items %}
+   		{% assign faq_tags = faq_item | split: "</h4>" %}
+        {% assign faq_head = faq_tags[0]%}
+        {% assign faq_content = faq_tags[1]%}
+    	  {% if faq_head != blank %}
+            <div class='card' index='{{forloop.index}}'>
+                <h4 data-toggle='collapse' data-target='#product-faq-{{forloop.index}}' >{{faq_head}}</h4>
+                <div id='#product-faq-{{forloop.index}}' class='collapse card-opened'>{{faq_content}}</div>
+            </div>
+          {%if forloop.index > 7 and size == 1 %}
+              </div>
+          {%endif%}
+    	{% endif %}
+    {% endfor %}
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/left-top-blue-icon.png?v=1614157553" class="left-top-icon deskMode">
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/left-bottom-blue-icon.png?v=1614157553" class="left-bottom-icon deskMode">
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/left-bottom-blue-icon.png?v=1614157553" class="right-top-icon deskMode">
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/right-bottom-icon.png?v=1614157639" class="right-bottom-icon deskMode">
+
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/icon-mob-blue1.png?v=1614157553" class="left-bottom-mob1 mobileMode">
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/icon-mob-blue2.png?v=1614157553" class="right-top-mob mobileMode">
+    <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/icon-mob-blue3.png?v=1614157553" class="left-top-mob mobileMode">
+  </div>
+{% endif %}

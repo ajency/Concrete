@@ -1,0 +1,58 @@
+{% unless current_collection %}
+{% assign current_collection = collection %}
+{% endunless %}
+
+{% assign on_sale = false %}
+{% if product.compare_at_price > sca_price %}
+{% assign on_sale = true %}
+{% endif %}
+
+{% assign sold_out = true %}
+{% if product.available  %}
+{% assign sold_out = false %}
+{% endif %}
+{% assign img_size = settings.img_size_grid %}
+<!-- Block2 -->
+<div class="block2">
+  {% assign product_created_at = product.created_at | date: '%s' %}
+  {% assign time_ago = 'now' | date: '%s' | minus: product_created_at | divided_by: 86400 %}
+  {% assign product_new_time = settings.product_new_time | times: 1 %}
+  <div class="block2-img">
+	<a href="{{ product.url | within: collection }}">
+      <img class="" src="{{ product.featured_image.src | img_url: '369x150' }}" alt="{{ product.featured_image.alt | escape }}">
+    </a>
+
+  </div>
+  <div class="block2-txt t-left p-t-20 p-b-0 p-l-6 p-r-6">
+    <a href="{{ product.url | within: collection }}" class="block2-name dis-block s-text3 p-b-5 text-left">
+      {{ product.title }}
+    </a>
+    
+    {% if sca_compare_at_price > sca_price %}
+    <span class="block2-newprice m-text8 p-r-5 p-l-4 pd-card-price">
+      {{ cart.currency.symbol }}{{ sca_price | money_without_currency }}
+    </span>
+    <span class="block2-oldprice m-text7 p-r-5 p-l-4 pd-card-price"style="font-size: 12px;
+    color: #666; font-weight:600; padding-left:0;">
+      {{ cart.currency.symbol }}{{ sca_compare_at_price_max | money_without_currency }}
+    </span>
+    <span class="savePrice" style="font-size: 12px;
+    color: #e1251b;">
+    	{% assign savePrice = sca_compare_at_price | minus: sca_price %}
+       	{% assign results = 0.000 | plus:savePrice | divided_by: sca_compare_at_price | times: 100 | round %}
+         {{ results }}% Off
+     </span>
+    {% else %}
+    <span class="block2-price m-text6 p-r-5">
+      {{ product.price | money }}
+    </span>    
+    {% endif %}
+    
+  </div>
+  <div class="block2-btn w-size2 trans-0-4 ml-auto mr-auto mt-3 mb-3">
+    <!-- Button -->
+    <a href="{{ product.url }}" class="flex-c-m size1 bg4 hov1 s-text1 trans-0-4"  data-loading-text="{{ 'products.product.loading' | t }}">
+      Shop Now
+    </a>
+  </div>
+</div>

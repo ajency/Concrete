@@ -1,0 +1,78 @@
+
+<div class="product-recommendations container" data-product-id="{{ product.id }}" data-limit="4">
+  {%- if recommendations.products_count-%}
+     <h2 class="title deskMode">Suggested Products</h2>
+     <p class="sub-title">Explore some of our other supplements</p>    
+     <ul class="product-slider slider">
+      <li class="product-card">
+        <a href="{{ product.url }}">
+          <div class="product-image-card">
+            <div class="product-img">
+              <img class="product__img" src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.featured_image.alt }}" />
+            </div>
+              <div class="product-tags">
+ 
+                {% assign tags = product.metafields.product_meta.product_card_tags | split: ";" %}
+                {% assign tags_text = product.metafields.product_meta.product_card_tags_text | split: ";" %}
+                {% for tag in tags %}
+                  {% assign index = forloop.index | minus: 1%}
+                  <span>
+                    {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                    {% assign img_svg = tag_slug | append: '.png'%}
+                    {% assign img_default = tag_slug | append: '.png'%}
+                    <script>
+                      $.noConflict();
+                      $(document).ready(function(){
+                        var valid_image = isImageValid('{{ img_svg | file_url }}');
+                          if(!valid_image){
+                            $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
+                          }
+                      });
+                    </script>          
+                    <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
+                  </span>
+                {% endfor %}
+            </div>
+          </div>
+          <div class="row"> 
+            <div class="product-description">         
+               <div class="product-details position-relative">
+                  <p class="product__title">{{ product.title }}</p>
+                  <span>{{product.metafields.product_meta.product_des}}</span>
+               </div>
+               <div class="price-bar">
+                  <div>
+                      <p class="product__price">{{ product.price | money}}</p>
+                      {% if product.compare_at_price_max > product.price %}
+                      <span class="product-sale-price" data-compare-price>
+                        {% if current_variant.compare_at_price > current_variant.price %}
+                          {{ current_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
+                        {% endif %}
+                      </span>
+                    {% endif %}
+                    <span class="product-offer">
+                      {% assign savePrice = current_variant.compare_at_price | minus: current_variant.price %}
+                        {% assign results = 0.000 | plus:savePrice | divided_by: current_variant.compare_at_price | times: 100 | round %}
+                         ({{ results }}% Off)
+                     </span>
+                  </div>
+                  <div class="add-btn">
+                     <button
+                        type="submit"
+                        name="add"
+                        class="btn-text"
+                        data-submit-button
+                        {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                          <span data-submit-button-text>
+                              + Add*
+                          </span>
+                      </button>
+                  </div>
+               </div>
+             </div>
+          </div>
+        </a>
+      </li>
+    </ul>
+  {%- endif -%}
+</div>
