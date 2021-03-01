@@ -230,7 +230,7 @@
 
                       {%- if request.page_type == 'blog' or request.page_type == 'article' -%}
                         <li>
-                          <a class="social-icons__link" href="{{ shop.url }}{{ blog.url }}.atom">
+                          <a class="social-icons__link" href="{{ shop.url }}{{ blog.url }}.atom" title="RSS" >
                             {% include 'icon-rss' %}
                             <span class="icon__fallback-text">RSS</span>
                           </a>
@@ -245,15 +245,14 @@
                             {% if inline_list %}list--inline{% endif %}">
                     {%- for link in linklists[footer_linklist].links -%}
                       <li class="site-footer__linklist-item">
-                        <a href="{{ link.url }}"
+                        <a href="{{ link.url }} title="{{ link.title }}">
                           {% if link.current %} aria-current="page"{% endif %}
-                        >
                           {{ link.title | escape }}
                         </a>
                         <ul class="footer-submenu">
                           {% for childlink in link.links %}
                             <li class="child-menu">
-                              <a href="{{ childlink.url }}">
+                              <a href="{{ childlink.url }}" title="{{ childlink.title }}">
                                 {{ childlink.title }}
                               </a>
                             </li>
@@ -274,7 +273,7 @@
 
 
   <div class="page-width">
-    <div class="grid grid--no-gutters small--text-center grid--footer-float-right">
+    <div class="small--text-center grid--footer-float-right">
   
       
       {%- if show_selectors -%}

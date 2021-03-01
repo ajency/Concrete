@@ -31,7 +31,7 @@
         <div  class="hamburger position-relative">
           <i class="fa fa-bars" aria-hidden="true"></i>
         </div>
-        <a href="/" class="logo" title="{{ section.settings.logo.alt | default: shop.name }}"> 
+        <a href="/" class="logo" title="HK Basics"> 
           {% if section.settings.logo != blank %}
             {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
             <img src="{{ section.settings.logo | img_url: image_size }}"
@@ -75,10 +75,10 @@
               {% if customer %}
                 <li>
                   {% if customer.first_name != blank %}
-                    <a href="/account">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
+                    <a href="/account" title="account">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
                     Welcome, {{ customer.first_name | capitalize}}</a>
                   {% else %}
-                    <a href="/account">{{ 'layout.customer.account' | t }}</a>
+                    <a href="/account" title="account">{{ 'layout.customer.account' | t }}</a>
                   {% endif %}
                 </li>
                 <li>
@@ -105,21 +105,21 @@
       </div>
       <nav role="navigation" class="nav container menu-list d-none">
         <div class="menu-links">
-          <a class="link">All Products<span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></a>
-          <a class="close"><span><i class="fa fa-times" aria-hidden="true"></i></span>Close</a>
+          <a class="link" title="All Products">All Products<span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></a>
+          <a class="close" title="close"><span><i class="fa fa-times" aria-hidden="true"></i></span>Close</a>
         </div>
         <ul>
           {% for link in linklists[section.settings.menu].links %}
             {% if link.links != blank %}
               <li>
-                <a href="{{ link.url }}">
+                <a href="{{ link.url }}" title="{{ link.title }}">
                   {{ link.title }}
                   {% render 'icon-arrow-down' %}
                 </a>
                 <ul class="submenu">
                   {% for childlink in link.links %}
                     <li class="child-menu">
-                      <a href="{{ childlink.url }}">
+                      <a href="{{ childlink.url }}" title="{{ childlink.title }}">
                         {{ childlink.title }}
                       </a>
                     </li>
@@ -128,7 +128,7 @@
               </li>
             {% else %}
               <li>
-                <a href="{{ link.url }}">
+                <a href="{{ link.url }}" title="{{ link.title }}">
                   {{ link.title }}
                 </a>
               </li>
@@ -137,7 +137,7 @@
         </ul>
       </nav>
       <div class="mobile-menu">
-        <a href="/" class="logo">
+        <a href="/" class="logo" title="HK Basics">
           {% if section.settings.logo != blank %}
             {% capture image_size %}{{ section.settings.logo_max_width }}x{% endcapture %}
             <img src="{{ section.settings.logo | img_url: image_size }}"
@@ -152,14 +152,14 @@
               {% if customer %}
                 <span class="account d-block">
                   {% if customer.name != blank %}
-                    <a href="/account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }}{% capture name %}{{ customer.name }}{% endcapture %}
+                    <a href="/account" title="account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }}{% capture name %}{{ customer.name }}{% endcapture %}
                   Welcome, {{ customer.name }}</a>
                   {% else %}
-                    <a href="/account">{{ 'layout.customer.account' | t }}</a>
+                    <a href="/account" title="account">{{ 'layout.customer.account' | t }}</a>
                   {% endif %}
                 </span>
                 {% else%}
-                <span class="account d-block"> <a href="/account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }} Login / Register</a>
+                <span class="account d-block"> <a href="/account" title="account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }} Login / Register</a>
                 </span>
               {% endif %}
           </span>
@@ -167,20 +167,20 @@
 
           <nav role="navigation" class="nav container menu-list menu-list-mobile">
             <div class="menu-links-mobile">
-              <a class="link">All Products</a>
+              <a class="link" title="All Products">All Products</a>
             </div>
             <ul class="mweb-mobile-menu">
               {% for link in linklists[section.settings.dynamic].links %}
                 {% if link.links != blank %}
                   <li class="main-child-menu">
-                    <a href="{{ link.url }}">
+                    <a href="{{ link.url }}" title="{{ link.title }}">
                       {{ link.title }}
                       {% render 'icon-arrow-down' %}
                     </a>
                     <ul class="submenu">
                       {% for childlink in link.links %}
                         <li class="child-menu">
-                          <a href="{{ childlink.url }}">
+                          <a href="{{ childlink.url }}" title="{{ childlink.title }}">
                             {{ childlink.title }}
                           </a>
                         </li>
@@ -189,7 +189,7 @@
                   </li>
                 {% else %}
                   <li>
-                    <a href="{{ link.url }}">
+                    <a href="{{ link.url }}" title="{{ link.title }}">
                       {{ link.title }}
                     </a>
                   </li>
@@ -200,14 +200,14 @@
               {% for link in linklists[section.settings.static].links %}
                 {% if link.links != blank %}
                   <li class="main-child-menu-static">
-                    <a href="{{ link.url }}">
+                    <a href="{{ link.url }}" title="{{ link.title }}">
                       {{ link.title }}
                       {% render 'icon-arrow-down' %}
                     </a>
                     <ul class="submenu-static">
                       {% for childlink in link.links %}
                         <li class="child-menu-static">
-                          <a href="{{ childlink.url }}">
+                          <a href="{{ childlink.url }}" title="{{ childlink.title }}">
                             {{ childlink.title }}
                           </a>
                         </li>
@@ -216,7 +216,7 @@
                   </li>
                 {% else %}
                   <li>
-                    <a href="{{ link.url }}">
+                    <a href="{{ link.url }}" title="{{ link.title }}">
                       {{ link.title }}
                     </a>
                   </li>

@@ -1,3 +1,11 @@
+<script>
+  function isImageValid(image_url){
+    var http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return (http.status != 404);
+}
+</script>
 <div class="container product-detail-tags">
   <div class="icon-list icon-list slider product-tag-slider">
   {% assign tags = product.metafields.product_meta.product-highlight-img | split: ";" %}
@@ -9,7 +17,6 @@
       {% assign img_svg = tag_slug | append: '.png'%}
       {% assign img_default = tag_slug | append: '.png'%}
       <script>
-        $.noConflict();
         $(document).ready(function(){
           var valid_image = isImageValid('{{ img_svg | file_url }}');
             if(!valid_image){

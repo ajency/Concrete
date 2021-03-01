@@ -1,0 +1,101 @@
+
+<!-- ======= Homepage card-slider ======= -->
+  <div class="card-slider">
+    <div class="container">
+      <div class="section-block text-center">
+        {% if section.settings.heading != blank %}
+            <h3 class="title">{{ section.settings.heading }}</h3>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+            <h5 class="subtitle">{{ section.settings.subtitle }}</h5>
+        {% endif %}
+      </div>
+      <div class="card-container {% if section.settings.classname != blank %} {{section.settings.classname}} {% endif %}slider">
+        {%- if section.blocks.size > 0 -%}
+            {% for block in section.blocks %}
+              {%- if block.settings.size != blank -%}
+                  {% assign iconsize = block.settings.size %}
+              {%- else -%}
+                  {% assign iconsize = '50x50' %}
+              {%- endif -%} 
+              <a href="{% if block.settings.category-url != blank %} {{ block.settings.category-url }} {% elsif block.settings.category-url == blank %} javascript:void(0){% endif %}" class="{% if section.settings.classname2 != blank %} {{section.settings.classname2}} {% endif %}" title={{ block.settings.category }}>
+                {%- if block.settings.image != blank -%}
+                    <img class="img-full-mobile" alt="{{ block.settings.category | default: shop.name }}" src="{{ block.settings.image | img_url: iconsize }}" />
+                {%- else -%}
+                    <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ iconsize }}" />
+                {%- endif -%}
+                 <p class="text-item {% if section.settings.classname1 != blank %} {{section.settings.classname1}} {% endif %}">{{ block.settings.category }}</p>
+            </a>
+            {% endfor %}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  <!-- End of Homepage card-slider -->
+
+{% schema %}
+{
+    "name": "Category Block", 
+    "settings": [
+ 
+      {
+          "type": "header",
+          "content": "General Settings"
+      },
+      {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+      },
+      {
+          "type": "text",
+          "id": "subtitle",
+         "label": "Sub Title"
+      },
+      {
+          "type": "text",
+          "id": "classname",
+         "label": "Block class name"
+      },
+      {
+          "type": "text",
+          "id": "classname2",
+         "label": "Card class name"
+      },
+      {
+          "type": "text",
+          "id": "classname1",
+         "label": "Category name Class"
+      }
+    ],
+    "blocks": [
+        {
+            "type": "item",
+            "name": "Icons image",
+            "settings": [
+                {
+                    "type": "image_picker",
+                    "id": "image",
+                    "label": "Icon image"
+                },
+                {
+                    "type": "text",
+                    "id": "category",
+                    "label": "Category Name"
+                },
+                {
+                    "type": "url",
+                    "id": "category-url",
+                    "label": "Collection Link"
+                }
+            ]
+        }
+    ],
+    "presets": [
+          {
+              "name": "Category Block",
+              "category": "Image"
+          }
+      ]
+  }
+{% endschema %}

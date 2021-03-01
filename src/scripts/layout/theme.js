@@ -58,15 +58,36 @@ $(document).ready(function()
   $('.form-close-icon').on('click', function(){
     $('.search-popup').removeClass('active');
   });
-  $('.mweb-mobile-menu > li').click(function(e) {
-    $(this).removeClass('show');
+	$('.mweb-mobile-menu > li').click(function(e) {
     e.stopPropagation();
     var $el = $('ul',this);
+
+	if($(this).hasClass('show')){
+		$(this).toggleClass('show');
+	}
+	else{
+		$('.mweb-mobile-menu > li').removeClass('show');
+		$(this).toggleClass('show');
+	}
     $('.mweb-mobile-menu > li > ul').not($el).slideUp();
     $el.stop(true, true).slideToggle(400);
-    $(this).toggleClass('show');
     });
     $('.mweb-mobile-menu > li > ul > li').click(function(e) {
       e.stopImmediatePropagation();  
     });
+
+	$('.product-faq-content .card h4').on('click', function(e){
+	  if($(this).hasClass('active')){
+			$(this).toggleClass('active');
+			$('.product-faq-content .card h4').siblings().slideUp('slow');
+// 			$(this).siblings().slideToggle('slow');
+		}
+      else{
+          $('.product-faq-content .card h4').removeClass('active');
+          $('.product-faq-content .card h4').siblings().slideUp('slow');
+          $(this).toggleClass('active');
+          $(this).siblings().slideToggle('slow');
+      }
+  });
+  
 });

@@ -1,0 +1,214 @@
+<div class="latest-articles">
+    <div class="section-block text-center container">
+        {% if section.settings.title != blank %}
+            <h3 class="title">{{ section.settings.title }}</h3>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+            <h5 class="subtitle">{{ section.settings.subtitle }}</h5>
+        {% endif %}
+    </div>
+
+  {%- assign blog = blogs[section.settings.blog] -%}
+
+  {% unless blog.articles_count == 0 %}
+    <div class="latest-articles-cards">
+      <div class="container">
+        <div class="row articles-slider slider">
+          {% for article in blog.articles limit: section.settings.post_limit %}
+            <div class="article-card col-md-4 col-sm-12">
+                  <a href="{{ article.url }}" class="article__link" title="{{ article.title }}">
+                    {% if article.image %}
+                      {% capture img_wrapper_id %}ArticleImageWrapper-{{ article.image.id }}{% endcapture %}
+                      {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+
+                      {% include 'image-style', image: article.image, height: 345, wrapper_id: img_wrapper_id, img_id: img_id %}
+                        <div  data-image-loading-animation>
+                          <img id="{{ img_id }}"
+                              class="article-featured-img lazyload"
+                              data-src="{{ img_url }}"
+                              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                              data-aspectratio="{{ article.image.aspect_ratio }}"
+                              data-sizes="auto"
+                              alt="">
+                        </div>
+                    {% endif %}
+                 </a>
+                <div class="article-body">
+                     <div class="content-body">
+                        <a href="{{ article.url }}" title="{{ article.title }}"><h2 class="title" id="FeaturedBlogTitle-{{ forloop.index0 }}-{{ section.id }}">
+                          {{ article.title }}
+                        </h2></a>
+
+                        {% if section.settings.blog_show_author %}
+                          <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                        {% endif %}
+                        <div class="date-comment">
+                          {% if section.settings.blog_show_date %}
+                            <span class="date">
+                              {{ article.published_at | time_tag: format: 'date' }}
+                            </span>
+                          {% endif %}
+                        </div>
+                    </div>
+                    <div class="content">
+                      {% if article.excerpt.size > 0 %}
+                      {{ article.excerpt }}
+                      {% else %}
+                      {{ article.content | strip_html | truncate: 150 }}
+                      {% endif %}
+                    </div>
+
+                    {% if article.tags.size > 0 %}
+                      <div class="blog-tags">
+                          {% for tag in article.tags %}
+                              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article__grid-tag" title="{{tag}}">{{ tag }}</a>
+                          {% endfor %}
+                      </div>
+                    {% endif %}
+                    {% if blog.comments_enabled? and article.comments_count > 0 %}
+                    <ul class="list--inline article__meta-buttons">
+                      {% if blog.comments_enabled? and article.comments_count > 0 %}
+                        <li>
+                          <a href="{{ article.url }}#comments" class="article__comment-count btn btn--tertiary btn--small">
+                            {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                          </a>
+                        </li>
+                      {% endif %}
+                    </ul>
+                   {% endif %}
+                </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+        {% if section.settings.show_view_all %}
+          <a href="{{blog.url}}" title="view all blogs" class="action-block blog-btn text-center  deskMode">
+            <button class="btn-text border-0">
+              View all blogs
+            </button>
+          </a>
+          <a href="{{blog.url}}" title="More Blogs" class="action-block text-cen ter mobileMode">
+             <button  class="btn-text border-0">
+              More blogs
+            </button>
+         </a>
+        {% endif %}
+    </div>
+  {% else %}
+    <div class="grid grid--uniform grid--blog">
+      {% for i in (1..section.settings.post_limit) %}
+        <div class="grid__item medium-up--one-third">
+          <div class="article__grid-meta">
+            <h3 class="article__title">
+              <a href="#">{{ 'homepage.onboarding.blog_title' | t }}</a>
+            </h3>
+
+            {% if section.settings.blog_show_author %}
+              <span class="article__author">{{ 'homepage.onboarding.blog_author' | t }}</span>
+            {% endif %}
+
+            <div class="rte article__grid-excerpt">
+              {{ 'homepage.onboarding.blog_excerpt' | t }}
+            </div>
+
+            <ul class="list--inline article__meta-buttons">
+              <li>
+                <a href="{{ article.url }}" class="btn btn--tertiary btn--small">
+                  {{ 'blogs.article.read_more' | t }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endunless %}
+
+</div>
+
+{% schema %}
+    {
+        "name": {
+            "en": "Blog posts"
+        },
+        "class": "index-section",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": {
+                "en": "Heading"
+            },
+            "default": {
+                "en": "Blog posts"
+            }
+        },
+        {
+            "type": "text",
+            "id": "subtitle",
+            "label": {
+                "en": "Sub Title"
+            },
+            "default": {
+                "en": "Blog posts"
+            }
+        },
+        {
+            "id": "blog",
+            "type": "blog",
+            "label": {
+                "en": "Blog"
+            }
+        },
+        {
+            "type": "range",
+            "id": "post_limit",
+            "label": {
+                "en": "Posts"
+            },
+            "min": 3,
+            "max": 12,
+            "step": 3,
+            "default": 3
+        },
+        {
+            "type": "checkbox",
+            "id": "blog_show_author",
+            "label": {
+                "en": "Show author"
+            },
+            "default": false
+        },
+        {
+            "type": "checkbox",
+            "id": "blog_show_date",
+            "label": {
+                "en": "Show date"
+            },
+            "default": true
+        },
+        {
+            "type": "checkbox",
+            "id": "show_view_all",
+            "label": {
+                "en": "Show 'View all' button"
+            },
+            "default": false
+        }
+    ],
+    "presets": [
+        {
+            "name": {
+                "en": "Blog posts"
+            },
+            "category": {
+                "en": "Blog"
+            },
+            "settings": {
+                "blog": "News",
+                "post_limit": 3
+            }
+        }
+    ]
+}
+{% endschema %}
