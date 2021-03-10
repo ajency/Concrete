@@ -1,0 +1,106 @@
+{%- assign article = articles[section.settings.article] -%}
+
+<section>
+  <div class="container">
+    <div class="ariticle-banner-info">
+      <h1 class="title">{{section.settings.heading}}</h1>
+    </div>
+  </div>
+  <div class="article-banner">
+    <a href="{{ article.url }}" title="{{article.title}}">
+      <img src="{{section.settings.image_desk | img_url: 'master'}}" class="w-100 deskMode">
+    </a>
+    <a href="{{ article.url }}" title="{{article.title}}">
+    	<img src="{{section.settings.image_mobile | img_url: '800x'}}" class="w-100 mobileMode">
+    </a>
+  </div>
+  <div class="info-block">
+    <div class="container" data-section-id="{{ section.id }}" data-section-type="article">
+      <span class="featured-tag">Featured Article</span>
+      <a href="{{ article.url }}" title="{{article.title}}"><h2 class="section-header">{{ article.title }}</h2></a>
+      <p class="section-subtext">{{ article.content | strip_html | truncate: 125 }}</p>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Blog Header",
+    "settings": [
+	  {
+          "type": "header",
+          "content": "General Settings"
+      },
+      {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+      },
+      {
+          "type": "image_picker",
+          "id": "image_desk",
+          "label": "Banner image(desktop)"
+      },
+      {
+          "type": "image_picker",
+          "id": "image_mobile",
+          "label": "Banner image(mobile)"
+      },
+      {
+          "type": "article",
+          "id": "article",
+          "label": "Featured Article"
+      }
+	]
+  }
+{% endschema %}
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "articleBody": "{{ article.content | strip_html }}",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ shop.url }}{{ page.url }}"
+  },
+  "headline": "{{ article.title }}",
+  {% if article.excerpt != blank %}
+    "description": "{{ article.excerpt | strip_html }}",
+  {% endif %}
+  {% if article.image %}
+    {% assign image_size = article.image.width | append: 'x' %}
+    "image": [
+      "https:{{ article | img_url: image_size }}"
+    ],
+  {% endif %}
+  "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+  "dateCreated": "{{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+  "author": {
+    "@type": "Person",
+    "name": "{{ article.author }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    {% if settings.share_image %}
+      {% assign image_size = settings.share_image.width | append: 'x' %}
+      "logo": {
+        "@type": "ImageObject",
+        "height": "{{ settings.share_image.height }}",
+        "url": "https:{{ settings.share_image | img_url: image_size }}",
+        "width": "{{ settings.share_image.width }}"
+      },
+    {% elsif article.image %}
+      {% assign image_size = article.image.width | append: 'x' %}
+      "logo": {
+        "@type": "ImageObject",
+        "height": "{{ article.image.height }}",
+        "url": "https:{{ article.image | img_url: image_size }}",
+        "width": "{{ article.image.width }}"
+      },
+    {% endif %}
+    "name": "{{ shop.name }}"
+  }
+}
+</script>
+

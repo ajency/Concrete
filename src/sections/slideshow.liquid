@@ -1,0 +1,386 @@
+{%- if section.settings.slideshow_height == 'adapt' -%}
+  {% comment %}
+    'min_aspect_ratio' is the minimum aspect ratio of images shown without
+    whitespace when 'slideshow_height' is set to 'adapt'.
+    The aspect ratio values for the first image in the slideshow will be used
+    unless it is blank, in that case a ratio of 2:1 will be used.
+  {% endcomment %}
+
+  {%- assign first_block = section.blocks[0] -%}
+  {%- if first_block.settings.image.aspect_ratio == blank -%}
+    {%- assign min_aspect_ratio = 2.0 -%}
+  {%- else -%}
+    {%- assign min_aspect_ratio = first_block.settings.image.aspect_ratio -%}
+  {%- endif -%}
+  {% assign wrapper_height = 100 | divided_by: min_aspect_ratio %}
+{%- endif -%}
+
+{%- assign text_alignments = section.settings.text_alignment | split: ' ' -%}
+{%- assign text_horizontal_alignment = text_alignments.first -%}
+{%- assign text_vertical_alignment = text_alignments.last | strip -%}
+
+<div class="home-banner">
+  {%- if section.blocks.size > 0 -%}
+    
+  <div class="banner-slider slider">
+    {%- for block in section.blocks -%}
+    <div>
+        {%- assign block_image = block.settings.desk_image -%}
+<!--      <div class="banner-img">
+            {%- if block.settings.desk_image != blank -%}
+            {%- if block.settings.size != blank -%}
+                {% assign bannersize = block.settings.size %}
+            {%- else -%}
+                {% assign bannersize = '2000x2000' %}
+            {%- endif -%} 
+            <img class="img-full-mobile deskMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.desk_image | img_url: bannersize }}" />
+            <img class="img-full-mobile mobileMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.mob_image | img_url: bannersize }}" />
+            {%- else -%}
+            <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ bannersize }}" />
+            {%- endif -%}
+          </div> -->
+          {%- if block.settings.desk_image != blank -%}
+              {%- if block.settings.size != blank -%}
+                  {% assign bannersize = block.settings.size %}
+              {%- else -%}
+                  {% assign bannersize = '2000x2000' %}
+              {%- endif -%} 
+              <div class="banner-img deskMode" style="background:url('{{ block.settings.desk_image | img_url: bannersize }}') top right no-repeat"></div>
+              <div class="banner-img mobileMode" style="background:url('{{ block.settings.mob_image | img_url: bannersize }}') top right no-repeat"></div>
+              <div class="container">
+              <div class="banner-info">
+                  {% unless block.settings.slide_title == blank and block.settings.subheading == blank %}
+                    <div class="title">
+                      {%- unless block.settings.slide_title == blank -%}
+                          <h2 class="title">
+                            {{ block.settings.slide_title | escape }}
+                          </h2>
+                      {%- endunless -%}
+                      {%- unless block.settings.subheading == blank -%}
+                          <p class="sub-title">
+                            {{ block.settings.subheading | escape }}
+                          </p>
+                      {%- endunless -%}
+                    </div>
+                  {% endunless %}
+
+                  {%- assign show_link_button = false -%}
+                  {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+                    {%- assign show_link_button = true -%}
+                  {%- endif -%}
+                  {%- if show_link_button -%}
+                    <div class="view-btn">
+                      <a class="view-btn-blue" href="{{ block.settings.button_link }}" class="btn slideshow__btn">
+                        {{ block.settings.button_label | escape }}
+                      </a>
+                    </div>
+                  {%- endif -%}
+              </div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": {
+    "en": "Slideshow"
+  },
+  "class": "index-section index-section--flush index-section--slideshow",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "select",
+      "id": "slideshow_height",
+      "label": {
+        "en": "Slide height"
+      },
+      "default": "adapt",
+      "options": [
+        {
+          "label": {
+            "en": "Adapt to first image"
+          },
+          "value": "adapt"
+        },
+        {
+          "label": {
+            "en": "Small"
+          },
+          "value": "small"
+        },
+        {
+          "label": {
+            "en": "Medium"
+          },
+          "value": "medium"
+        },
+        {
+          "label": {
+            "en": "Large"
+          },
+          "value": "large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": {
+        "en": "Text size"
+      },
+      "default": "medium",
+      "options": [
+        {
+          "label": {
+            "en": "Medium"
+          },
+          "value": "medium"
+        },
+        {
+          "label": {
+            "en": "Large"
+          },
+          "value": "large"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": {
+        "en": "Text alignment"
+      },
+      "default": "center center",
+      "options": [
+        {
+          "label": {
+            "en": "Top left"
+          },
+          "value": "left top"
+        },
+        {
+          "label": {
+            "en": "Top center"
+          },
+          "value": "center top"
+        },
+        {
+          "label": {
+            "en": "Top right"
+          },
+          "value": "right top"
+        },
+        {
+          "label": {
+            "en": "Middle left"
+          },
+          "value": "left center"
+        },
+        {
+          "label": {
+            "en": "Middle center"
+          },
+          "value": "center center"
+        },
+        {
+          "label": {
+            "en": "Middle right"
+          },
+          "value": "right center"
+        },
+        {
+          "label": {
+            "en": "Bottom left"
+          },
+          "value": "left bottom"
+        },
+        {
+          "label": {
+            "en": "Bottom center"
+          },
+          "value": "center bottom"
+        },
+        {
+          "label": {
+            "en": "Bottom right"
+          },
+          "value": "right bottom"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "autorotate",
+      "label": {
+        "en": "Auto-rotate slides"
+      },
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autorotate_speed",
+      "label": {
+        "cs": "Změnit snímek co",
+        "da": "Skift slide hver",
+        "de": "Slides überall ändern",
+        "en": "Change slides every"
+      },
+      "max": 9,
+      "min": 3,
+      "step": 2,
+      "unit": {
+        "en": " s"
+      },
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": {
+        "en": "Image slide"
+      },
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desk_image",
+          "label": {
+            "en": "Desktop Image"
+          }
+        },
+        {
+          "type": "image_picker",
+          "id": "mob_image",
+          "label": {
+            "en": "Mobile Image"
+          }
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": {
+            "en": "Image position"
+          },
+          "default": "center center",
+          "options": [
+            {
+              "label": {
+                "en": "Top left"
+              },
+              "value": "left top"
+            },
+            {
+              "label": {
+                "en": "Top center"
+              },
+              "value": "center top"
+            },
+            {
+              "label": {
+                "en": "Top right"
+              },
+              "value": "right top"
+            },
+            {
+              "label": {
+                "en": "Middle left"
+              },
+              "value": "left center"
+            },
+            {
+              "label": {
+                "en": "Middle center"
+              },
+              "value": "center center"
+            },
+            {
+              "label": {
+                "en": "Middle right"
+              },
+              "value": "right center"
+            },
+            {
+              "label": {
+                "en": "Bottom left"
+              },
+              "value": "left bottom"
+            },
+            {
+              "label": {
+                "en": "Bottom center"
+              },
+              "value": "center bottom"
+            },
+            {
+              "label": {
+                "en": "Bottom right"
+              },
+              "value": "right bottom"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "slide_title",
+          "label": {
+            "en": "Heading"
+          },
+          "default": {
+            "en": "Image slide"
+          }
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": {
+            "en": "Subheading"
+          },
+          "default": {
+            "en": "Tell your brand's story through images"
+          }
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": {
+            "en": "Button label"
+          }
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": {
+            "en": "Button link"
+          }
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "en": "Slideshow"
+      },
+      "category": {
+        "en": "Image"
+      },
+      "settings": {
+        "autorotate": false,
+        "autorotate_speed": 5
+      },
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -32,31 +32,42 @@
   {%- endunless -%}
 {%- endif -%}
 
-<article role="article">
+<article role="article" class="article-wrapper container">
 
+
+  <header role="banner">
+    <h1 class="title">{{ article.title }}</h1>
+    {% capture date %}{{ article.published_at | time_tag: format: 'month_day_year' }}{% endcapture %}
+    <p class="author-info">{{ 'blogs.article.author_on_date_html' | t: author: article.author, date: date }}</p>
+  </header>
+  
+  
   {% if article.image %}
     <div class="hero-banner hero-banner--article lazyload" data-bgset="{% render 'responsive-bg-image', image: article.image %}"></div>
-
+  <div class="article__grid">
+    <img id="{{ img_id }}"
+         class="lazyload"
+         src="{{ article.image | img_url: '300x300' }}"
+         data-src="{{ img_url }}"
+         data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+         data-aspectratio="{{ article.image.aspect_ratio }}"
+         data-sizes="auto"
+         alt="">
+  </div>
     <noscript>
       {%- assign image_size = article.image.width | append: 'x' -%}
       <div class="hero-banner hero-banner--article" style="background-image: {{ article.image | img_url: image_size }}"></div>
     </noscript>
   {% endif %}
 
-  <header role="banner">
-    <h1>{{ article.title }}</h1>
-    {% capture date %}{{ article.published_at | time_tag: format: 'month_day_year' }}{% endcapture %}
-    <p>{{ 'blogs.article.author_on_date_html' | t: author: article.author, date: date }}</p>
-  </header>
-
-  <div class="rte">
+  <div class="rte post-content">
     {{ article.content }}
   </div>
 
   {% if article.tags.size > 0 %}
-    <ul>
+    <ul class="tag-list">
       {% for tag in article.tags %}
-        <li>
+        <li class="tag">
           <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
         </li>
       {% endfor %}

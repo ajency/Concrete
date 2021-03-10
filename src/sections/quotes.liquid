@@ -1,0 +1,245 @@
+<div class="testimonials">
+    <div class="section-block text-center container">
+        {% if section.settings.title != blank %}
+            <h3 class="title">{{ section.settings.title }}</h3>
+        {% endif %}
+        {% if section.settings.subtitle != blank %}
+            <h5 class="subtitle">{{ section.settings.subtitle }}</h5>
+        {% endif %}
+    </div>
+
+  {% if section.blocks.size > 0 %}
+    <div class="testimonials-cards">
+      <div class="container-fluid testimonial-containter">
+        <div class="row testimonials-slider slider">
+          {% for block in section.blocks %}
+            <div class="cards col-md-4 col-sm-12">
+              {%- if block.settings.size != blank -%}
+                  {% assign imageSize = block.settings.size %}
+                {%- else -%}
+                  {% assign imageSize = '200x200' %}
+                {%- endif -%} 
+                    {%- if block.settings.image != blank -%}
+                      <img class="testimonial-feature-img" alt="{{ block.settings.description | escape }}" src="{{ block.settings.image | img_url: imageSize }}" />
+                    {%- else -%}
+                      <img class="img-responsive testimonial-feature-img" alt="{{ shop.name }}" src="//placehold.it/{{ imageSize }}" />
+                    {%- endif -%}
+                    <div class="reviewer-info">
+                      <h4 class="name">{{ block.settings.author }}</h4>
+                      <p class="designation">{{ block.settings.designation }}</p>
+                  </div>
+                  <div class="testimonial-content">
+                    <p class="review">{{ block.settings.quote }}</p>
+                    <h5 class="product-nutrients">{{ block.settings.subtext }}</h5>
+                    <div class="nutrient-list">
+                      
+                      {%- assign product1 = all_products[block.settings.product1] -%}
+                      {%- assign product2 = all_products[block.settings.product2] -%}
+                      {%- assign product3 = all_products[block.settings.product3] -%}
+                      {%- assign current_variant = product.selected_or_first_available_variant -%}
+                      {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+            {%- if block.settings.product1 != blank -%}
+                        <a href="{{product1.url}}" title="{{ product1.title }}" class="item" data-section-id="{{ section.id }}" data-section-type="product1">
+                           <img src="{{ product1.featured_image | img_url: 'small' }}">
+                          <span class="ml-0">{{ product1.title }}</span>
+                        </a>
+                        {%- endif -%}
+                      {%- if block.settings.product2 != blank -%}
+                        <a href="{{product2.url}}" title="{{ product2.title }}" class="item" data-section-id="{{ section.id }}" data-section-type="product2">
+                          <img src="{{ product2.featured_image | img_url: 'small' }}">
+                          <span class="ml-0">{{ product2.title }}</span>
+                        </a>
+                       {%- endif -%}
+                      {%- if block.settings.product3 != blank -%}
+                        <a href="{{product3.url}}" title="{{ product3.title }}" class="item" data-section-id="{{ section.id }}" data-section-type="product3">
+                           <img src="{{product3.featured_image | img_url: 'small'}}">
+                           <span class="ml-0">{{ product3.title }}</span>
+                        </a>
+                       {%- endif -%}
+                  </div>
+               </div>
+          </div>
+           {% endfor %}
+      </div>
+    </div>
+  </div>
+ {% endif %}
+
+  {% if section.blocks.size == 0 %}
+    {% include 'no-blocks' %}
+  {% endif %}
+</div>
+
+
+
+{% schema %}
+{
+  "name": {
+    "en": "Testimonials"
+  },
+  "class": "index-section",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": {
+        "en": "Heading"
+      },
+      "default": {
+        "en": "Testimonials"
+      }
+      },
+      {
+          "type": "text",
+          "id": "subtitle",
+         "label": "Sub Title"
+      }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": {
+        "en": "Testimonial"
+      },
+      "settings": [
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": {
+            "en": "Author"
+          },
+          "default": {
+            "en": "Author's name"
+          }
+        },
+        {
+          "type": "text",
+          "id": "designation",
+          "label": {
+            "en": "Designation"
+          },
+          "default": {
+            "en": "Designation"
+          }
+        },
+        {
+          "type": "text",
+          "id": "quote",
+          "label": {
+            "en": "Text"
+          },
+          "default": {
+            "en": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>"
+          }
+        },
+        {
+          "type": "text",
+          "id": "subtext",
+          "label": "Tag line"
+        },
+        {
+          "type": "product",
+          "id": "product1",
+          "label": "First Product"
+        },
+        {
+          "type": "product",
+          "id": "product2",
+          "label": "Second Product"
+        },
+        {
+          "type": "product",
+          "id": "product3",
+          "label": "Third Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "en": "Testimonials"
+      },
+      "category": {
+        "en": "Text"
+      },
+      "blocks": [
+        {
+          "type": "quote"
+        },
+        {
+          "type": "quote"
+        },
+        {
+          "type": "quote"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.title | escape }}",
+  "url": "{{ shop.url }}{{ product.url }}",
+  {% if product.featured_image %}
+    {% assign image_size = product.featured_image.width | append: 'x' %}
+    "image": [
+      "https:{{ product.featured_image.src | img_url: image_size }}"
+    ],
+  {% endif %}
+  "description": "{{ product.description | strip_html | escape }}",
+  {% if current_variant.sku != blank %}
+    "sku": "{{ current_variant.sku }}",
+  {% endif %}
+  "brand": {
+    "@type": "Thing",
+    "name": "{{ product.vendor | escape }}"
+  },
+  {% if product.variants %}
+    "offers": [
+      {% for variant in product.variants %}
+        {
+          "@type" : "Offer",
+          "availability" : "http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price" : "{{ variant.price | divided_by: 100.00 }}",
+          "priceCurrency" : "{{ shop.currency }}",
+          "url" : "{{ shop.url }}{{ variant.url }}",
+          "itemOffered" :
+          {
+              "@type" : "Product",
+              {% if variant.image %}
+                {% assign variant_image_size = variant.image.width | append: 'x' %}
+                "image": "http:{{ variant.image.src | img_url: variant_image_size }}",
+              {% endif %}
+              {% if variant.title != blank %}
+                "name" : "{{ variant.title | escape }}",
+              {% endif %}
+              {% if variant.sku != blank %}
+                "sku": "{{ variant.sku }}",
+              {% endif %}
+              {% if variant.weight != blank %}
+                "weight": {
+                  "@type": "QuantitativeValue",
+                  {% if variant.weight_unit != blank %}
+                    "unitCode": "{{ variant.weight_unit }}",
+                  {% endif %}
+                  "value": "{{ variant.weight | weight_with_unit: variant.weight_unit }}"
+                },
+              {% endif %}
+              "url": "{{ shop.url }}{{ variant.url }}"
+          }
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  {% endif %}
+}
+</script>

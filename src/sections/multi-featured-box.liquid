@@ -3,32 +3,32 @@
   <section>
     <div class="hk-basics-pillar" style="background-color: {{section.settings.color_bg }};">
       <div class="container">
-          <div class="info-block">
-            {% if section.settings.heading != blank %}
-              <h3 class="title">{{ section.settings.heading | escape }}</h3>
-            {% endif %}
-            {% if section.settings.subtitle != blank %}
-              <h5 class="sub-title">{{ section.settings.subtitle }}</h5>
-            {% endif %}
+        <div class="info-block">
+          {% if section.settings.heading != blank %}
+            <h1 class="title">{{ section.settings.heading | escape }}</h1>
+          {% endif %}
+          {% if section.settings.subtitle != blank %}
+            <h5 class="sub-title">{{ section.settings.subtitle }}</h5>
+          {% endif %}
             <div class="info-block-group">
-                {%- if section.blocks.size > 0 -%}
-                    {% for block in section.blocks %}
-                      {%- if block.settings.size != blank -%}
-                          {% assign bannersize = block.settings.size %}
+              {%- if section.blocks.size > 0 -%}
+                {% for block in section.blocks %}
+                  {%- if block.settings.size != blank -%}
+                      {% assign bannersize = block.settings.size %}
+                  {%- else -%}
+                      {% assign bannersize = '200x200' %}
+                  {%- endif -%} 
+                  <div class="info-block-item">
+                      {%- if block.settings.image != blank -%}
+                          <img class="img-full-mobile" alt="{{ block.settings.description | escape }}" src="{{ block.settings.image | img_url: bannersize }}" />
                       {%- else -%}
-                          {% assign bannersize = '200x200' %}
-                      {%- endif -%} 
-                        <div class="info-block-item">
-                            {%- if block.settings.image != blank -%}
-                                <img class="img-full-mobile" alt="{{ block.settings.description | escape }}" src="{{ block.settings.image | img_url: bannersize }}" />
-                            {%- else -%}
-                                <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ bannersize }}" />
-                            {%- endif -%}
-                             <p class="info-block-item-text">{{ block.settings.description }}</p>
+                          <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ bannersize }}" />
+                      {%- endif -%}
+                       <p class="info-block-item-text">{{ block.settings.description }}</p>
                     </div>
-                  {% endfor %}
-                 {%- endif -%}
-              </div>
+                {% endfor %}
+              {%- endif -%}
+            </div>
           </div>
       </div>
     </div>

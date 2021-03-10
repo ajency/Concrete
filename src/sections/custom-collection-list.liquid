@@ -1,0 +1,692 @@
+<script>
+function isImageValid(image_url){
+    var http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return (http.status != 404);
+}
+</script>
+<div data-section-id="{{ section.id }}" data-section-type="collection-template">
+  {% assign path = request.path | split: "/" %}
+  {% if path[1] == "collections" and path.last == 'all'%}
+    <!-- ======= Sub header Section ======= -->
+    <section id="subheader" class="subheader"> 
+      <div class="container">
+        <div class="subheader-wrapper">
+          <div class="list-view">
+            <div>
+              {%- for block in section.blocks -%}
+              {%- assign footer_linklist = block.settings.menu -%}
+              <ul class="nav
+               {% if inline_list %}list--inline{% endif %}" id="filterList">
+                {%- for link in linklists[footer_linklist].links -%}
+                <li class="nav-item">
+                  <a href="{{ link.url }}" id="{{ link.title }}" class="collectionMenu"
+                     {% if link.current %} aria-current="page"{% endif %}
+                    >
+                    {{ link.title | escape }}
+                  </a>
+                  <ul class="collection-submenu">
+                    {% for childlink in link.links %}
+                    <li class="child-menu">
+                      <a href="{{ childlink.url }}">
+                        {{ childlink.title }}
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {%- endfor -%}
+              </ul>
+              {%- endfor -%}
+            </div>          
+          </div>
+          <div class="filters">
+            <div class="filters-option">
+              <span>Filter Concerns</span>
+                <div class="dropdown">
+                  <button type="button" class="btn dropdown-toggle  deskMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Show All</button>
+                  <button type="button" class="btn dropdown-toggle mobilefilter mobileMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filters{{ 'filter.svg' | asset_url | img_tag: 'filter', 'filter' }}</button>
+                  <ul class="dropdown-menu">
+                    <div class="form-group has-search">
+                      <input type="text" class="form-control form-search" placeholder="Search" id="search">
+                    </div>
+                      <div class="filter-block">
+                        <form class="form-horizontal" action="">
+                         <div class="select-option d-flex">
+                            <div id="ck-button">
+                              <label>
+                                <input type="checkbox" id="checkAll">Select All
+                              </label>
+                            </div>
+                            <span class="clear">Clear</span>
+                          </div>
+
+                          <div class="form-group tags categories">
+                            {% for collection in collections %}
+                            <div class="checkbox"><label for="category-{{collection.id}}"><input type="checkbox" name="collection-name" rel="category-{{collection.id}}" id="category-{{collection.id}}"/> {{collection.title}} <span class="checkmark"></span> </label></div>
+                            {% endfor %}
+                          </div>
+                        </form>
+                      </div>
+                  </ul>
+                </div>
+<!--                 <span>Sort By</span>
+                <div class="dropdown">
+                  <div class="collSortBy">
+                    <button type="button" class="btn dropdown-toggle sort-select sort-closed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select All</button>
+                    <ul class="sort-list dropdown-menu">
+                      <li class="sort-element dropdown-item" data-value="all"><span class="sort-link">All</span></li>
+                      <li class="sort-element dropdown-item" data-value="low-to-high"><span class="sort-link">Price: Low to High</span></li>
+                      <li class="sort-element dropdown-item" data-value="high-to-low"><span class="sort-link">Price: High to Low</span></li>
+                      <li class="sort-element dropdown-item" data-value="name-az"><span class="sort-link">Name A-Z</span></li>
+                      <li class="sort-element dropdown-item" data-value="name-za"><span class="sort-link">Name Z-A</span></li>
+                    </ul>
+                  </div>
+               </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- End Sub header -->
+    <div class="filtered-data">
+      <div class="container">
+        <div id="tagFilter" class="tag">
+        </div>
+      </div>
+    </div>
+    {% include 'breadcrumbs' %}
+      <div id="Collection">
+        {% for collection in collections %}
+        <section class="grid-item col-12" id="category-{{collection.id}}">
+          <ul class="results list-unstyled container ">
+            <li class="category-{{collection.id}}">
+              <section class="banner-section">
+                {% if collection.image != blank  %}
+                <div class="container banner-image deskMode">
+                      {%- assign image_object = collection.image  -%}
+                      {% render 'responsive-image' with
+                        image: image_object,
+                        max_width: 480,
+                        max_height: 480
+                      %}
+                  </div>
+                  <div class="container banner-image mobileMode">
+                    {% if collection.metafields.collection_meta.mobile_banner != blank %}
+                    <img src="{{collection.metafields.collection_meta.mobile_banner}}">
+                    {% else %}           
+                      {%- assign image_object = collection.image  -%}
+                      {% render 'responsive-image' with
+                        image: image_object,
+                        max_width: 480,
+                        max_height: 480
+                      %} 
+                    {% endif %}
+                  </div>
+                {% elsif collection.image == blank %}
+                    <div class="container banner" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
+                      <div class="bannerText">
+                        <h2 class="heading">
+                          {{ collection.title }}
+                        </h2>
+                        <p class="subText">{{collection.description}}
+                        </p>
+                      </div>
+                    </div>
+                {% endif %}
+              </section>
+              <div class="collection-url">
+                <a href="{{collection.url}}" class="link">View all</a>
+              </div>
+              <section class="featured-products container ">
+
+                  <div class="collection__products">
+                      {% for product in collection.products %}
+                       <div class="product-card">
+                           <!--<script>console.log({{ collection.products | json }});</script> -->
+                        <a href="{{ product.url | within: collection }}" title="{{ product.title | escape }}">
+                            <div class="product-image-card row" style="background: linear-gradient(270.17deg, #fff 1.03%, rgba(255, 255, 255, 0) 99.94%), {{collection.metafields.collection_meta.bg_color}};">
+                              {% if product.featured_image != blank %}
+                                <div class="product-img">
+                                  <img class="product__img" src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.featured_image.alt }}" />
+                                </div>
+                              {% endif %}
+                                <div class="product-tags">
+
+                                  {% assign tags = product.metafields.product_meta.product_card_tags | split: ";" %}
+                                  {% assign tags_text = product.metafields.product_meta.product_card_tags_text | split: ";" %}
+                                  {% for tag in tags %}
+                                    {% assign index = forloop.index | minus: 1%}
+                                    <span>
+                                      {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                                      {% assign img_svg = tag_slug | append: '.png'%}
+                                      {% assign img_default = tag_slug | append: '.png'%}
+                                      <script>
+                                        $(document).ready(function(){
+                                          var valid_image = isImageValid('{{ img_svg | file_url }}');
+                                            if(!valid_image){
+                                              $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
+                                            }
+                                        });
+                                      </script>          
+                                      <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
+                                    </span>
+                                  {% endfor %}
+                              </div>
+                            </div>
+
+                            <div class="row"> 
+                              <div class="product-description">         
+                                 <div class="product-details position-relative">
+                                    <h3 class="product__title">{{ product.title }}</h3>
+                                   {% if product.metafields.product_meta.product_des != blank %}
+                                    <span>{{product.metafields.product_meta.product_des}}</span>
+                                  {% endif %} 
+                                </div>
+                                 <div class="price-bar">
+                                    <div>
+                                      <p class="product__price product-price">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros | remove: "," }}</p>
+                                      {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+                                      <span class="product-sale-price" data-compare-price>
+                                        {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
+                                      </span>
+                                      {% endif %}
+                                      <span class="product-offer">
+                                        {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
+                                        {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
+                                        ({{ results }}% Off)
+                                      </span>
+                                    </div>
+                                    <div class="add-btn">
+                                       <button
+                                          type="submit"
+                                          name="add"
+                                          class="btn-text"
+                                          data-submit-button
+                                          {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                                            <span data-submit-button-text>
+                                                + Add*
+                                            </span>
+                                        </button>
+                                    </div>
+                                 </div>
+                               </div>
+                            </div>
+                          </a>
+                       </div>
+
+                      {% else %}
+                        {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0 %}
+                          {% for i in (1..8) %}
+                            <a href="#">
+                              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
+                            </a>
+
+                            <p>
+                              <a href="#">{{ 'homepage.onboarding.product_title' | t }}</a>
+                            </p>
+
+                            <p>
+                              {{ 1999 | money }}
+                            </p>
+                          {% endfor %}
+                        {% else %}
+                          <p>{{ 'collections.general.no_matches' | t }}</p>
+                        {% endif %}
+
+                      {% endfor %}
+                    </div>
+              </section>
+            </li>
+          </ul>
+        </section>
+        {% endfor %}
+      </div>
+    {% else %}
+  
+  <div class="container">
+      <div id="CollectionSection" data-section-id="{{ section.id }}" data-section-type="collection-template" data-grid-type="{{ section.settings.collection_products_grid }}">
+        {% include 'breadcrumbs' %}
+          <section class="banner-section">
+          {% if collection.image != blank  %}
+          <div class="container banner-image deskMode">
+            {%- assign image_object = collection.image  -%}
+            {% render 'responsive-image' with
+            image: image_object,
+            max_width: 480,
+            max_height: 480
+            %}
+          </div>
+          <div class="container banner-image mobileMode">
+            {% if collection.metafields.collection_meta.mobile_banner != blank %}
+              <img src="{{collection.metafields.collection_meta.mobile_banner}}">
+            {% else %}           
+              {%- assign image_object = collection.image  -%}
+              {% render 'responsive-image' with
+              image: image_object,
+              max_width: 480,
+              max_height: 480
+              %} 
+            {% endif %}
+          </div>
+          {% elsif collection.image == blank %}
+          <div class="container banner" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
+            <div class="bannerText">
+                <h2 class="heading">
+                  {{ collection.title }}
+                </h2>
+                <p class="subText">{{collection.description}}
+                </p>
+            </div>
+          </div>
+          {% endif %}
+        </section>
+       {%- assign is_filter_by_available = false -%}
+      {%- if section.settings.tags_enable and collection.all_tags.size > 0 -%}
+      {%- assign is_filter_by_available = true -%}
+      {%- endif -%} 
+      <div class="filters-toolbar-wrapper{% if is_filter_by_available %} filters-toolbar--has-filter{% endif %}">
+          <div class="filters-toolbar">
+            <div class="filters-toolbar__item-wrapper">
+              {% if section.settings.sort_enable %}
+              <div class="filters-toolbar__item-child">
+                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+                <div class="filters-toolbar__input-wrapper select-group">
+                  <select name="sort_by" id="SortBy"
+                          class="filters-toolbar__input hidden"
+                          aria-describedby="a11y-refresh-page-message a11y-selection-message"
+                          data-default-sortby="{{ collection.default_sort_by }}"
+                          data-select-input
+                          >
+                    {%- for option in collection.sort_options -%}
+                      {% if option.value contains 'price-' or option.value contains 'title-ascending' or option.value contains 'title-descending' %}
+                        <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>{{ option.name }}</option>
+                      {% endif  %}
+                    {%- endfor -%}
+                  </select>
+                  {% include 'icon-chevron-down' %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+      </div>
+        <section class="featured-products container ">
+          <div class="collection__products">
+            {% for product in collection.products %}
+              <div class="product-card">
+                <a href="{{ product.url | within: collection }}">
+                  <div class="product-image-card row" style="background: linear-gradient(270.17deg, #fff 1.03%, rgba(255, 255, 255, 0) 99.94%), {{collection.metafields.collection_meta.bg_color}};">
+                    {% if product.featured_image != blank %}
+                    <div class="product-img">
+                      <img class="product__img" src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.featured_image.alt }}" />
+                    </div>
+                    {% endif %}
+                    <div class="product-tags">
+
+                      {% assign tags = product.metafields.product_meta.product_card_tags | split: ";" %}
+                      {% assign tags_text = product.metafields.product_meta.product_card_tags_text | split: ";" %}
+                      {% for tag in tags %}
+                      {% assign index = forloop.index | minus: 1%}
+                      <span>
+                        {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                        {% assign img_svg = tag_slug | append: '.png'%}
+                        {% assign img_default = tag_slug | append: '.png'%}
+                        <script>
+                          $(document).ready(function(){
+                            var valid_image = isImageValid('{{ img_svg | file_url }}');
+                                                           if(!valid_image){
+                              $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
+                                }
+                                });
+                        </script>          
+                        <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
+                      </span>
+                      {% endfor %}
+                    </div>
+                  </div>
+
+                  <div class="row"> 
+                    <div class="product-description">         
+                      <div class="product-details position-relative">
+                        <h3 class="product__title">{{ product.title }}</h3>
+                        {% if product.metafields.product_meta.product_des != blank %}
+                        <span>{{product.metafields.product_meta.product_des}}</span>
+                        {% endif %} 
+                      </div>
+                      <div class="price-bar">
+                        <div>
+                          <p class="product__price product-price">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros | remove: "," }}</p>
+                          {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+                          <span class="product-sale-price" data-compare-price>
+                            {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
+                          </span>
+                          {% endif %}
+                          <span class="product-offer">
+                            {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
+                            {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
+                            ({{ results }}% Off)
+                          </span>
+                        </div>
+                        <div class="add-btn">
+                          <button
+                                  type="submit"
+                                  name="add"
+                                  class="btn-text"
+                                  data-submit-button
+                                  {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                            <span data-submit-button-text>
+                              + Add*
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+    </div>
+    </div>
+  {% endif %}
+</div>
+
+
+{% schema %}
+{
+  "name": {
+    "en": "Collection pages"
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": {
+        "en": "Layout"
+      },
+      "default": "grid",
+      "options": [
+        {
+          "value": "grid",
+          "label": {
+            "en": "Grid"
+          }
+        },
+        {
+          "value": "list",
+          "label": {
+            "en": "List"
+          }
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "grid",
+      "label": {
+        "en": "Products per row (grid only)"
+      },
+      "default": 4,
+      "min": 2,
+      "max": 5,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": {
+        "en": "Rows per page (grid only)"
+      },
+      "default": 2,
+      "min": 2,
+      "max": 8,
+      "step": 1
+    },
+    {
+      "type": "checkbox",
+      "id": "sort_enable",
+      "label": {
+        "en": "Enable sorting"
+      },
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": {
+        "en": "Menu"
+      },
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": {
+            "en": "Heading"
+          },
+          "default": {
+            "en": "Quick links"
+          }
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": {
+            "en": "Menu"
+          },
+          "default": "footer"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+<script>
+  //show all categories
+  var _showCategories = function(item) {
+    for (var x = 0; x < item.length; ++x) {
+      $(item[x]).fadeIn();
+    }
+  };
+  var categories = [],
+    resources = [],
+    initial = "";
+
+//list all the category blocks
+    {% for collection in collections %}
+    var catname = "#category-{{collection.id}}";
+    categories.push(catname); 
+    {% endfor %}
+
+
+    $('div.tags').find('input[type="checkbox"]').click(function() {
+
+    resources = [];
+    initial = "";
+
+    if ($('div.tags.categories input[type="checkbox"]:checked').length > 0) {
+      $('.results li').hide();
+
+      $('div.tags').find('input:checked').each(function() {
+        if (($.inArray($(this).attr('rel'), resources)) === -1) {
+          resources.push($(this).attr('rel'));
+        }
+        initial = resources.toString();
+        initial = initial.replace(/,/g, '.');
+      });    
+
+      for (var i=0; i< resources.length; i++){
+        for (var j=0; j < categories.length; j++){
+          if(categories[j] == '#' + resources[i]){
+               $(".results > li." + resources[i]).fadeIn()
+               $(categories[j]).fadeIn(); 
+          }
+         }
+      }
+    } else {
+      $('.results > li').fadeIn('fast');
+      _showCategories(categories);
+    }
+  });
+
+
+  $('.clear').click(function() {
+    $('.filtered-data').hide();
+    $('div.tags').find('input:checked').each(function() {
+      $('input[type="checkbox"]:checked').prop('checked',false);
+    }); 
+    $('.results > li').fadeIn('fast');
+    _showCategories(categories);
+  });
+    
+  $(document).ready(function () {
+    $("#checkAll").click(function () {
+      $('input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+    });
+    $('.results > li').fadeIn('fast');
+    _showCategories(categories);
+
+    $('input[type="checkbox"]').click(function(){ //".checkbox" change 
+      if($('input[type="checkbox"]:checked').length == $('input[type="checkbox"]').length){
+        $('#checkAll').prop('checked',true);
+        $('.results > li').fadeIn('fast');
+          _showCategories(categories);
+        }else{
+      $('#checkAll').prop('checked',false);
+      }
+    });
+  }); 
+    
+  $('.nav li.nav-item').find('a').click(function() {
+    var filterType =  $(this).attr('id');
+    $('.results li').hide();
+    var categories = [];
+    var categoriesId = [];
+    {% for collection in collections %}
+      var catname = "category-{{collection.id}}-{{collection.title}}";
+      categories.push(catname); 
+    {% endfor %}
+    {% for collection in collections %}
+      var catId = "category-{{collection.id}}";
+      categoriesId.push(catId); 
+    {% endfor %}
+      for (var x = 0; x < categories.length; x++) { 
+        for(var y = 0; y < categoriesId.length; y++){
+          if(filterType == 'All'){
+           $('.results > li').fadeIn('fast');
+           _showCategories(categoriesId);
+        } 
+        else if(categories[x] == categoriesId[y] + '-' + filterType){
+          $(".results > li." + categoriesId[y]).fadeIn();
+          $(categoriesId[y]).fadeIn();
+        }
+      }
+    }
+  });    
+
+  (function ($) {
+     $(document).ready(function(){
+        $('#search').keyup(function(){
+          var valThis = $(this).val().toLowerCase();
+          $("input[name='collection-name']").each(function(){
+              var text = $("label[for='"+$(this).attr('id')+"']").text().toLowerCase();
+             (text.indexOf(valThis.toLowerCase()) >= 0 ) ? $(this).parent().show() : $(this).parent().hide();
+            });
+        });
+        $('input[type="checkbox"]').click(function(){
+          $('.filtered-data').show();
+          var text = [];
+            $('input[name="collection-name"]:checked').each(function(){
+              text.push($("label[for='"+$(this).attr('id')+"']").text().trim()+'|'+$(this).attr('id'));
+            });
+            $('.tag').empty('<span class="tag-name"><span aria-hidden="true" id="close-tag" class="icon">×</span></span>');
+            for (var i=0; i < text.length; i++){
+              var temp =  [];
+              temp = text[i].split('|');
+               var taggedName = $('.tag').append('<span class="tag-name" id='+temp[1]+'_a'+'>' +  temp[0]  + '<span onclick="closeTags()" aria-hidden="true" class="icon">×</span></span>');
+              if(i == (text.length - 1)){
+                $('.tag').append('<a onclick="clearTags()" class="link clear" id="clearTags">Clear All</a>');
+              }
+            }
+        });
+      });
+  })(jQuery); 
+  
+  function closeTags(){
+    $('.tag span.tag-name').click(function(){
+    $('.results li').hide();
+      var val = $(this).attr('id');
+      $('#'+val).remove();
+
+      var text = [];
+      var tmpt = [];
+      tmpt = val.split('_');
+      $('input[name="collection-name"]:checked').each(function(){
+        text.push($(this).attr('id'));
+      });
+      for ( var x=0; x< text.length; x++){
+        //tmpt[x] = text[x].split('_');
+        if(tmpt[0] == text[x]){
+            $('#' + text[x]).prop('checked', false);
+        }
+        
+      }
+      var categories = [];
+        var newArr = [];
+          $('input[name="collection-name"]:checked').each(function(){
+            
+            newArr.push($(this).attr('id'));
+            
+          });
+      if(newArr.length != 0){
+        for(var a=0; a < newArr.length ; a++){
+         $(".results > li." + newArr[a]).fadeIn()
+           $(newArr[a]).fadeIn(); 
+        }
+      }else{
+          $('#clearTags').remove();
+      $('.tag span').remove();
+          $('.results li').hide();
+          $('.results > li').fadeIn('fast');
+          {% for collection in collections %}
+        var catId = "category-{{collection.id}}";
+          categories.push(catId); 
+          {% endfor %}
+      _showCategories(categories);
+      
+      }
+    });
+  }
+
+  function clearTags(){
+    $('#clearTags').remove();
+    $('.tag span').remove();
+    $('.filtered-data').hide();
+
+    var text1 = [];
+    var categoriesId = [];
+      $('input[name="collection-name"]:checked').each(function(){
+        
+        text1.push($("label[for='"+$(this).attr('id')+"']").text().trim()+'|'+$(this).attr('id'));
+
+      });
+
+    var checkName = [];
+      for ( var x=0; x< text1.length; x++){
+        checkName = text1[x].split('|');
+        
+            $('#'+ checkName[1]).prop('checked', false);
+           
+      }
+      {% for collection in collections %}
+      var catId = "category-{{collection.id}}";
+      categoriesId.push(catId); 
+      {% endfor %}
+      $('.results > li').fadeIn('fast');
+      _showCategories(categoriesId);
+  }
+</script>  

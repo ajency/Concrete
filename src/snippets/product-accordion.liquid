@@ -2,11 +2,11 @@
       {% if product.metafields.product_meta.details %}
       <div class="card mb-5">
         <div class="card-header">
-          <h2 class="mb-0 collapsed py-2 px-5 card-title card-opened">
+          <p class="mb-0 collapsed py-2 px-5 card-title card-opened">
             <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-description" aria-expanded="true">
               Details
             </button>
-          </h2>
+          </p>
         </div>
         <div id="product-description" class="collapse show-card">
           <div class="card-body py-4 px-5">
@@ -19,11 +19,11 @@
       {% if product.metafields.product_meta.use %}
       <div class="card my-5">
         <div class="card-header">
-          <h2 class="collapsed py-2 px-5 card-title card-opened">
+          <p class="collapsed py-2 px-5 card-title card-opened">
             <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-uses" aria-expanded="true">
               Suggested Use
             </button>
-          </h2>
+          </p>
         </div>
         <div id="product-uses" class="collapse show-card">
           <div class="card-body py-4 px-5">
@@ -33,39 +33,70 @@
       </div>
       {% endif %}
 
-      {% if product.metafields.product_meta.ingredients %}
+      {% assign category = 'ingredients' %}
+      {% unless blogs[category].empty? or blogs[category].articles.size == 0 %}
+      {% assign tags = product.metafields.product_meta.ingredients | split: ";" %}        
       <div class="card my-5">
         <div class="card-header">
-          <h2 class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
+          <p class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
             <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-ingredient" aria-expanded="true">
               Ingredients
             </button>
-          </h2>
+          </p>
         </div>
         <div id="product-ingredient" class="collapse show-card">
-          <div class="card-body py-4 px-5">
-            {{product.metafields.product_meta.ingredients}}
-          </div>
+          <div class="card-body py-4 px-5 row">
+           {% for article in blogs[category].articles  %}
+           {% if tags contains article.title %}
+                <div class="card-article col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="card-article-wrapper ">
+                    <div class="card-article-img header-text">
+                      <img class="icon" src="{{ article.image.src | img_url: '500x' }}" alt="{{ article.image.alt }}">
+                      <div class="card-article-header title">
+                        <p class="sub-header">{{ article.title }}</p>
+                      </div>
+                    </div>
+                    <div class="card-article-content body-text">{{ article.content }}</div>
+                  </div>
+                </div>
+            {% endif %}
+            {% endfor %}          
+         </div>
         </div>
       </div>
-      {% endif %}
-
-      {% if product.metafields.product_meta.benefits %}
+  {% endunless %}
+      {% assign category = 'benefits' %}
+      {% unless blogs[category].empty? or blogs[category].articles.size == 0 %}
+      {% assign tags = product.metafields.product_meta.benefits | split: ";" %}      
       <div class="card my-5">
         <div class="card-header">
-          <h2 class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
+          <p class="collapsed py-2 px-5 card-title card-opened" data-toggle="collapse">
             <button class="btn accordion-btn collapsed" type="button" data-toggle="collapse" data-target="#product-benefits" aria-expanded="true">
               Benefits
             </button>
-          </h2>
+          </p>
         </div>
         <div id="product-benefits" class="collapse show-card">
-          <div class="card-body py-4 px-5">
-            {{product.metafields.product_meta.benefits}}
+          <div class="card-body py-4 px-5 row">
+           {% for article in blogs[category].articles  %}
+           {% if tags contains article.title %}
+            <div class="card-article col-md-4 col-sm-4 col-xs-12">
+              <div class="card-article-wrapper ">
+                <div class="card-article-img header-text">
+                  <img class="icon" src="{{ article.image.src | img_url: '500x' }}" alt="{{ article.image.alt }}">
+                  <div class="card-article-header title">
+                    <p class="sub-header">{{ article.title }}</p>
+                  </div>
+                </div>
+                <div class="card-article-content body-text">{{ article.content }}</div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
           </div>
         </div>
       </div>
-      {% endif %}
+    {% endunless %}
          <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/left-top-blue-icon1.png?v=1614157553" class="left-top-icon deskMode">
          <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/left-bottom-blue-icon1.png?v=1614157553" class="right-top-icon deskMode">
          <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/right-bottom-blue-icon1.png?v=1614157553" class="right-bottom-icon deskMode">

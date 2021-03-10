@@ -39,14 +39,17 @@
                           {{ article.title }}
                         </h2></a>
 
-                        {% if section.settings.blog_show_author %}
+<!--                         {% if section.settings.blog_show_author %}
                           <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
-                        {% endif %}
+                        {% endif %} -->
                         <div class="date-comment">
                           {% if section.settings.blog_show_date %}
                             <span class="date">
                               {{ article.published_at | time_tag: format: 'date' }}
                             </span>
+                          <span class="comment-count">
+                            {{ 'comment.svg' | asset_url | img_tag: 'comment', 'comment-icon' }}
+                            {{ article.comments_count }} {% if article.comments_count < 2 %} comment {% else %} comments{% endif %}</span>
                           {% endif %}
                         </div>
                     </div>
@@ -65,17 +68,19 @@
                           {% endfor %}
                       </div>
                     {% endif %}
+<!--                   {% if comment and comment.created_at %}
+                    {% assign number_of_comments = article.comments_count | plus: 1 %}
+                  {% endif %}
                     {% if blog.comments_enabled? and article.comments_count > 0 %}
                     <ul class="list--inline article__meta-buttons">
                       {% if blog.comments_enabled? and article.comments_count > 0 %}
                         <li>
                           <a href="{{ article.url }}#comments" class="article__comment-count btn btn--tertiary btn--small">
-                            {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
                           </a>
                         </li>
                       {% endif %}
                     </ul>
-                   {% endif %}
+                   {% endif %} -->
                 </div>
             </div>
           {% endfor %}

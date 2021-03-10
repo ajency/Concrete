@@ -71,25 +71,33 @@
         {% if shop.customer_accounts_enabled %}
           <span class="account-links" title="account">
             {{ 'user.svg' | asset_url | img_tag: 'user', 'user' }}
-            <ul class="user-account d-none">
+            <ul class="user-account d-none"> 
               {% if customer %}
                 <li>
                   {% if customer.first_name != blank %}
-                    <a href="/account" title="account">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
-                    Welcome, {{ customer.first_name | capitalize}}</a>
+                    <a href="/account" title="">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
+                    My Profile</a>
                   {% else %}
-                    <a href="/account" title="account">{{ 'layout.customer.account' | t }}</a>
+                    <a href="/account" title="">{{ 'layout.customer.account' | t }}</a>
                   {% endif %}
+              </li>
+              <li>
+                  <a href="/account" title="">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
+                    My Orders</a>
+              </li>
+              <li>
+                  <a href="/account" title="">{% capture first_name %}{{ customer.first_name }}{% endcapture %}
+                    Refer & Earn </a>
                 </li>
                 <li>
-                  {{ 'layout.customer.log_out' | t | customer_logout_link }}
+                  <a href="/account/logout" title="">{{ 'layout.customer.log_out' |t }}</a>
                 </li>
               {% else %}
                 <li>
-                  {{ 'layout.customer.log_in' | t | customer_login_link }}
+                  <a href="/account/login" title="">{{ 'layout.customer.log_in' | t }}</a>
                 </li>
                 <li>
-                  {{ 'layout.customer.create_account' | t | customer_register_link }}
+                  <a href="/account/register" title="">{{ 'layout.customer.create_account' | t }}</a>
                 </li>
               {% endif %}
             </ul>
@@ -97,15 +105,15 @@
         {% endif %}
 
         <a href="/cart" class="position-relative" title="cart">
-          {{ 'cart.svg' | asset_url | img_tag: 'cart', 'cart' }}
+          {{ 'cart.svg' | asset_url | img_tag: 'cart', 'cart position-relative' }}
           <div class="cart-count">
             <span data-cart-count>{{ cart.item_count }}</span><span class="visually-hidden"> {{ 'layout.cart.items_count' | t: count: cart.item_count }}</span>
           </div>
         </a>
       </div>
-      <nav role="navigation" class="nav container menu-list d-none">
+      <nav role="navigation" class="nav container menu-list">
         <div class="menu-links">
-          <a class="link" title="All Products">All Products<span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></a>
+          <a class="link" title="All Products" href="/collections/all">All Products<span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></a>
           <a class="close" title="close"><span><i class="fa fa-times" aria-hidden="true"></i></span>Close</a>
         </div>
         <ul>
@@ -152,14 +160,14 @@
               {% if customer %}
                 <span class="account d-block">
                   {% if customer.name != blank %}
-                    <a href="/account" title="account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }}{% capture name %}{{ customer.name }}{% endcapture %}
-                  Welcome, {{ customer.name }}</a>
+                    <a href="/account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }}{% capture name %}{{ customer.name }}{% endcapture %}
+                 My Profile</a>
                   {% else %}
-                    <a href="/account" title="account">{{ 'layout.customer.account' | t }}</a>
+                    <a href="/account" title="">My Profile</a>
                   {% endif %}
                 </span>
                 {% else%}
-                <span class="account d-block"> <a href="/account" title="account">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }} Login / Register</a>
+                <span class="account d-block"> <a href="/account" title="">{{ 'user-icon.svg' | asset_url | img_tag: 'user', 'user-mobile' }} Login / Register</a>
                 </span>
               {% endif %}
           </span>
@@ -167,7 +175,7 @@
 
           <nav role="navigation" class="nav container menu-list menu-list-mobile">
             <div class="menu-links-mobile">
-              <a class="link" title="All Products">All Products</a>
+              <a class="link" href="/collections/all" title="All Products">All Products</a>
             </div>
             <ul class="mweb-mobile-menu">
               {% for link in linklists[section.settings.dynamic].links %}
@@ -227,10 +235,10 @@
               <ul class="account-details">
                 {% if customer %}
                   <li>
-                    <a href="#">Profile</a>
+                    <a href="/account">Profile</a>
                   </li>
                   <li>
-                    <a href="">My Orders</a>
+                    <a href="/account">My Orders</a>
                   </li>
                   <li>
                     <a href="/account/logout">
