@@ -1,0 +1,130 @@
+<div class="contact-page">
+  <div class="overlay"></div>
+  <div class="contact-page-content">
+    <div class="form">
+      <h1 class="form-title">{{section.settings.heading}}</h1>
+      <p class="form-content">{{section.settings.subHeading}}</p>
+      <div class="rte">
+        {{ page.content }}
+      </div>
+
+      {% form 'contact' %}
+
+        {% if form.posted_successfully? %}
+          <p class="form-success">
+            {{ 'contact.form.post_success' | t }}
+          </p>
+        {% endif %}
+
+        {{ form.errors | default_errors }}
+
+        <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+        <input type="text"
+          name="contact[name]"
+          id="ContactFormName"
+          class="input-field"
+          value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+
+        <label for="ContactFormEmail">{{ 'contact.form.email' | t }}</label>
+        <input type="email"
+          name="contact[email]"
+          id="ContactFormEmail"
+          class="input-field"    
+          value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off">
+
+        <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+        <input type="tel"
+          name="contact[phone]"
+          id="ContactFormPhone"
+          class="input-field"
+          value="{% if form[phone] %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+          pattern="[0-9\-]*">
+
+        <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+        <textarea rows="10"
+          name="contact[body]"
+          id="ContactFormMessage"
+          class="input-field textarea"
+          >
+          {%- if form.body -%}
+            {{- form.body -}}
+          {%- endif -%}
+        </textarea>
+      	<div class="form-group">
+      		<label for="terms" class="note"><input type="checkbox" name="terms" id="terms" value="" checked="checked">          
+      		I have read and agree to HK Vital's<strong> terms and conditions</strong></label>
+      	</div>
+      	<input type="submit" class="button send" value="{{ 'contact.form.send' | t }}">
+      {% endform %}
+    </div>
+  </div>
+    <div class="address-info">
+      <div class="address-wrapper container m-auto">
+        <h4 class="title">{{section.settings.title}}</h4>
+        <p class="detail">{{section.settings.address}}</p>
+        <div class="links">
+        	{{section.settings.phone-number}}
+        	{{section.settings.email}}
+        </div>
+      </div>
+    </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Contact Form",
+    "settings": [
+      {
+          "type": "header",
+          "content": "Form Details"
+      },
+	  {
+        "type": "text",
+        "id": "heading",
+        "label": "Page Header",
+        "default": "Get in Touch"
+      },
+	  {
+        "type": "text",
+        "id": "subHeading",
+        "label": "Page Subheading"
+      },
+      {
+          "type": "header",
+          "content": "Address Details"
+      },
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Reach our office"
+      },
+	  {
+        "type": "text",
+        "id": "address",
+        "label": "Address",
+		"default": "address"
+      },
+	  {
+        "type": "richtext",
+        "id": "phone-number",
+        "label": "Phone Number"
+      },
+	  {
+        "type": "richtext",
+        "id": "email",
+        "label": "Email Id"
+      }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

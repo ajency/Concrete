@@ -138,9 +138,9 @@
 {%- endcapture -%}
 
 <footer class="site-footer critical-hidden" role="contentinfo" data-section-id="{{ section.id }}" data-section-type="footer-section">
-  <div class="page-width container">
+  <div class="container">
     <div class="logo-section">
-        <img src="https://cdn.shopify.com/s/files/1/0535/7941/5716/files/hk-basics-logo_220x.png?v=1613628777" class="logo w-100">
+        <img src="https://cdn.shopify.com/s/files/1/0534/4532/9074/files/hk-vitals_bf3b652a-e5c5-4a43-899d-cc27704ac638_210x.png?v=1615532796" class="logo w-100">
       <div class="tag-line">{{ section.settings.tagline-desktop }}</div>
         <div class="tag-line-mobile">{{ section.settings.tagline-mobile }}</div>
     </div>
@@ -149,7 +149,8 @@
 
         <div class="site-footer__item
                     {% if section.blocks.size == 1 %} site-footer__item--center{% endif %}
-                    {{ footer_item }}
+                    {% if block.type == 'text' %} site-footer__item--one-third {% endif %}
+                    {% if block.type == 'link_list' %} site-footer__item--one-quarter {% endif %} 
                     {% if block.type == 'newsletter' and section.blocks.size == 3 %}site-footer-newsletter__one-half{% endif %}"
              {{ block.shopify_attributes }}>
           <div class="site-footer__item-inner site-footer__item-inner--{{ block.type }}">
@@ -227,7 +228,13 @@
                           </li>
                         {%- endif -%}
                       {%- endfor -%}
-
+                      {%- if section.settings.linkedin != blank -%}
+                        <li class="social-icons__item">
+                            <a class="social-icons__link" href="{{ section.settings.linkedin }}" aria-describedby="a11y-external-message">
+                              {{ 'linkedin.svg' | asset_url | img_tag: 'linkedin', 'icon' }}
+                            </a>
+                          </li>
+                      {%- endif -%}
                       {%- if request.page_type == 'blog' or request.page_type == 'article' -%}
                         <li>
                           <a class="social-icons__link" href="{{ shop.url }}{{ blog.url }}.atom" title="RSS" >
@@ -245,8 +252,8 @@
                             {% if inline_list %}list--inline{% endif %}">
                     {%- for link in linklists[footer_linklist].links -%}
                       <li class="site-footer__linklist-item">
-                        <a href="{{ link.url }}" title="{{ link.title }}">
-                          {% if link.current %} aria-current="page"{% endif %}
+                        <a href="{{ link.url }}" title="{{ link.title }}"
+                          {% if link.current %} aria-current="page"{% endif %}>
                           {{ link.title | escape }}
                         </a>
                         <ul class="footer-submenu">
@@ -272,7 +279,7 @@
 
 
 
-  <div class="page-width container">
+  <div class="container">
     <div class="small--text-center grid--footer-float-right">
   
       
@@ -576,6 +583,11 @@
       "type": "text",
       "id": "tagline-mobile",
       "label": "Tagline Mobile"
+    },
+    {
+      "type": "url",
+      "id": "linkedin",
+      "label": "Linkedin Url"
     },
     {
       "type": "text",

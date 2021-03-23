@@ -14,6 +14,7 @@
   {%- assign enable_image_zoom = section.settings.enable_image_zoom -%}
   {%- assign compare_at_price = current_variant.compare_at_price -%}
   {%- assign price = current_variant.price -%}
+  {%- assign varint_title = current_variant.title -%}
 
   {% case section.settings.media_size %}
     {% when 'small' %}
@@ -45,9 +46,10 @@
       </div>
       <div class="product-image-slider slider mobileMode">
           {%- for media in product.media -%}
-            {% include 'media_mobile', media: media, height: height, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale %}
+            {% include 'media_mobile', media: media, height: height, enable_image_zoom: enable_image_zoom, image_zoom_size: product_image_zoom_size, image_scale: product_image_scale, variant: varint_title %}
           {%- endfor -%}
       </div>
+      
         <div>
           <noscript>
             <div class="image-container">
@@ -153,8 +155,8 @@
         {% for tag in tags %}
         {% assign index = forloop.index | minus: 1%}
         {% capture tag_slug %}{{ tag | replace: " ", "_" | replace: "/", "_" | replace: "&", "_" }}{% endcapture %}
-        {% assign img_svg = 'tag' | append: '-' | append: tag_slug | append: '.png'%}
-        {% assign img_default = 'tag' | append: '-' | append: 'default' | append: '.png'%}        
+        {% assign img_svg = tag_slug | append: '.png'%}
+        {% assign img_default = 'default' | append: '.png'%}        
         <div class="tag-icon col-2 text-center">
           <img height="48px" width="45px" class='item-tag icon-img' src="{{ img_svg | file_url }}" alt="{{ tags_text[index] }}" title="{{ tags_text[index] }}"/>
           <span class="icon-title">{{ tags_text[index] }}</span>
@@ -186,43 +188,29 @@
 
               {% form 'product', product, class:form_classes, novalidate: 'novalidate', data-product-form: '' %}
                 {% unless product.has_only_default_variant %}
-                  <div class="product-form__controls-group">
-                    {% for option in product.options_with_values %}
-                      <div class="selector-wrapper js product-form__item">
-                 
-                        <select class="single-option-selector single-option-selector-{{ section.id }} product-form__input"
-                          id="SingleOptionSelector"
-                          data-index="option{{ forloop.index }}"
-                          name="selectbox" 
-                        >
+                  <div class="radio-wrapper js product-form__item product-form__controls-group">  
+                     {% for option in product.options_with_values %}
+                        <fieldset class="single-option-radio product-size"
+                          id="ProductSelect-option-{{ forloop.index0 }}">
+                          {% assign option_index = forloop.index %}
                           {% for value in option.values %}
-                            <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>{{ value }} Tablets</option>
-                          {% endfor %}
-                        </select>
+                            {% assign variant_label_state = true %}
+                            {% if product.options.size == 1 %}
 
-      
-                      </div>
-                    {% endfor %}
-                    <!-- {% for option in product.options_with_values %}
-                      <div class="selector-wrapper js product-form__item">
-                          <div class="single-option-selector single-option-selector-{{ section.id }} product-form__input product-size"
-                            id="SingleOptionSelector-{{ forloop.index0 }}"
-                          >
-                              {% for value in option.values %}
-                              <input 
-                                type="radio" 
-                                name="variant-option" 
-                                class="option"
-                                value="{{ value | escape }}" 
-                                id="variant-option-{{ value }}" 
-                               {% if option.selected_value == value %} checked="checked" {% endif %}
-                              >
-                            <label for="variant-option-{{ value}}">{{ value }} Tablets</label>
-                            {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %} -->
-                  </div>
+                            {% endif %}
+                            <input type="radio"
+                              {% if option.selected_value == value %} checked="checked"{% endif %}
+                              {% unless variant_label_state %} disabled="disabled"{% endunless %}
+                              value="{{ value | escape }}"
+                              data-index="option{{ option_index }}"
+                              name="option{{ option.position }}"
+                              class="single-option-selector single-option-selector-{{ section.id }} {% unless variant_label_state %} disabled{% endunless %} option"
+                              id="ProductSelect-option-{{ option.name | handleize }}-{{ value | escape }}">
+                            <label for="ProductSelect-option-{{ option.name | handleize }}-{{ value | escape }}"{% unless variant_label_state %} class="disabled"{% endunless %}>{{ value | escape }}</label>
+                          {% endfor %}
+                        </fieldset>
+                    {% endfor %} 
+                    </div>
                 {% endunless %}
 
                 <select name="id" id="ProductSelect-{{ section.id }}" class="product-form__variants no-js">
@@ -269,15 +257,15 @@
                 >
                   <button type="submit" name="add" class="btn-text"
                     {% unless current_variant.available %} aria-disabled="true"{% endunless %}
-                    aria-label="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endunless %}"
+                    aria-label="{% unless current_variant.available %}{{ 'products.product.sold_out' | t }}{% else %} {{ 'products.product.add_to_cart' | t }}{% endunless %}"
                     class="btn product-form__cart-submit{% if section.settings.enable_payment_button and product.selling_plan_groups == empty %} btn--secondary-accent{% endif %}"
                     {% if settings.enable_ajax %}aria-haspopup="dialog"{% endif %}
                     data-add-to-cart>
                     <span data-add-to-cart-text>
                       {% unless current_variant.available %}
-                         {{ 'products.product.add_to_cart' | t }}
+                          {{ 'products.product.add_to_cart' | t }}
                       {% else %}
-                        {{ 'products.product.add_to_cart' | t }}
+                         + {{ 'products.product.add_to_cart' | t }}
                       {% endunless %}
                     </span>
                     <span class="hide" data-loader>
@@ -332,7 +320,7 @@
     </div>
 
   </div>
- {% if product.metafields.product_meta.tags_img != blank %}
+ {% if product.metafields.product_meta.product-highlight-img != blank %}
     <div class="product-highlight"> 
       {%- include "product-highlight" -%}
     </div>
@@ -772,3 +760,20 @@
   ]
 }
 {% endschema %}
+
+<!-- 
+         <script>
+           $('input[type="radio"]').click(function(){
+             var radioValue = $('input[type="radio"]:checked').val();
+                {% for variant in product.variants %}
+                 var prd_title= '{{variant.title}}';
+                 console.log(prd_title);
+                 console.log('{{variant.image.src}}');
+                 if(radioValue == prd_title){
+                   $('#product-single__image-wrapper').append('<img src="https://cdn.shopify.com/s/files/1/0534/4532/9074/products/Ashwagandha_-60-01_720x.png?v=1614767636"/>');
+
+                 }
+                   {% endfor %}
+           });
+           
+          </script> -->

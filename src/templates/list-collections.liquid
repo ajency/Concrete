@@ -15,12 +15,12 @@ function isImageValid(image_url){
     <section class="banner-section">
       {% if collection.image != blank  %}
       <div class="container banner-image deskMode">
-        {%- assign image_object = collection.image  -%}
-        {% render 'responsive-image' with
-          image: image_object,
-          max_width: 480,
-          max_height: 480
-        %}
+            {%- assign image_object = collection.image  -%}
+            {% render 'responsive-image' with
+              image: image_object,
+              max_width: 480,
+              max_height: 480
+            %}
         </div>
         <div class="container banner-image mobileMode">
           {% if collection.metafields.collection_meta.mobile_banner != blank %}
@@ -51,102 +51,102 @@ function isImageValid(image_url){
         <a href="{{collection.url}}" class="link">View all</a>
     </div>
       <div class="collection__products">
-        {% for product in collection.products %}
-        <div class="product-card">
+          {% for product in collection.products %}
+           <div class="product-card">
 
-          <a href="{{ product.url | within: collection }}">
-            <div class="product-image-card row" style="background: linear-gradient(270.17deg, #fff 1.03%, rgba(255, 255, 255, 0) 99.94%), {{collection.metafields.collection_meta.bg_color}};">
-              {% if product.featured_image != blank %}
-                <div class="product-img">
-                  <img class="product__img" src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.featured_image.alt }}" />
-                </div>
-              {% endif %}
-                <div class="product-tags">
-
-                  {% assign tags = product.metafields.product_meta.product_card_tags | split: ";" %}
-                  {% assign tags_text = product.metafields.product_meta.product_card_tags_text | split: ";" %}
-                  {% for tag in tags %}
-                    {% assign index = forloop.index | minus: 1%}
-                    <span>
-                      {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
-                      {% assign img_svg = tag_slug | append: '.png'%}
-                      {% assign img_default = tag_slug | append: '.png'%}
-                      <script>
-                        $(document).ready(function(){
-                          var valid_image = isImageValid('{{ img_svg | file_url }}');
-                            if(!valid_image){
-                              $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
-                            }
-                        });
-                      </script>          
-                      <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
-                    </span>
-                  {% endfor %}
-              </div>
-            </div>
-
-            <div class="row"> 
-              <div class="product-description">         
-                 <div class="product-details position-relative">
-                    <h3 class="product__title">{{ product.title }}</h3>
-                   {% if product.metafields.product_meta.product_des != blank %}
-                    <span>{{product.metafields.product_meta.product_des}}</span>
-                  {% endif %} 
-                </div>
-                 <div class="price-bar">
-                   <div>
-                     <p class="product__price product-price">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros | remove: "," }}</p>
-                     {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
-                     <span class="product-sale-price" data-compare-price>
-                       {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
-                     </span>
-                     {% endif %}
-                     <span class="product-offer">
-                       {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
-                       {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
-                       ({{ results }}% Off)
-                     </span>
-                   </div>
-                    <div class="add-btn">
-                       <button
-                          type="submit"
-                          name="add"
-                          class="btn-text"
-                          data-submit-button
-                          {% unless current_variant.available %}disabled="disabled"{% endunless %}>
-                            <span data-submit-button-text>
-                                + Add*
-                            </span>
-                        </button>
+           <a href="{{ product.url | within: collection }}">
+                <div class="product-image-card row" style="background: linear-gradient(270.17deg, #fff 1.03%, rgba(255, 255, 255, 0) 99.94%), {{collection.metafields.collection_meta.bg_color}};">
+                  {% if product.featured_image != blank %}
+                    <div class="product-img">
+                      <img class="product__img" src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.featured_image.alt }}" />
                     </div>
-                 </div>
-               </div>
-            </div>
-          </a>
-       </div>
+                  {% endif %}
+                    <div class="product-tags">
 
-      {% else %}
-        {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0 %}
-          {% for i in (1..8) %}
-            <a href="#">
-              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
-            </a>
+                      {% assign tags = product.metafields.product_meta.product_card_tags | split: ";" %}
+                      {% assign tags_text = product.metafields.product_meta.product_card_tags_text | split: ";" %}
+                      {% for tag in tags %}
+                        {% assign index = forloop.index | minus: 1%}
+                        <span>
+                          {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                          {% assign img_svg = tag_slug | append: '.png'%}
+                          {% assign img_default = tag_slug | append: '.png'%}
+                          <script>
+                            $(document).ready(function(){
+                              var valid_image = isImageValid('{{ img_svg | file_url }}');
+                                if(!valid_image){
+                                  $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
+                                }
+                            });
+                          </script>          
+                          <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
+                        </span>
+                      {% endfor %}
+                  </div>
+                </div>
 
-            <p>
-              <a href="#">{{ 'homepage.onboarding.product_title' | t }}</a>
-            </p>
+                <div class="row"> 
+                  <div class="product-description">         
+                     <div class="product-details position-relative">
+                        <h3 class="product__title">{{ product.title }}</h3>
+                       {% if product.metafields.product_meta.product_des != blank %}
+                        <span>{{product.metafields.product_meta.product_des}}</span>
+                      {% endif %} 
+                    </div>
+                     <div class="price-bar">
+                       <div>
+                         <p class="product__price product-price">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros | remove: "," }}</p>
+                         {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+                         <span class="product-sale-price" data-compare-price>
+                           {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
+                         </span>
+                         {% endif %}
+                         <span class="product-offer">
+                           {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
+                           {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
+                           ({{ results }}% Off)
+                         </span>
+                       </div>
+                        <div class="add-btn">
+                           <button
+                              type="submit"
+                              name="add"
+                              class="btn-text"
+                              data-submit-button
+                              {% unless current_variant.available %}disabled="disabled"{% endunless %}>
+                                <span data-submit-button-text>
+                                    + Add*
+                                </span>
+                            </button>
+                        </div>
+                     </div>
+                   </div>
+                </div>
+              </a>
+           </div>
 
-            <p>
-              {{ 1999 | money }}
-            </p>
+          {% else %}
+            {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0 %}
+              {% for i in (1..8) %}
+                <a href="#">
+                  {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
+                  {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
+                </a>
+
+                <p>
+                  <a href="#">{{ 'homepage.onboarding.product_title' | t }}</a>
+                </p>
+
+                <p>
+                  {{ 1999 | money }}
+                </p>
+              {% endfor %}
+            {% else %}
+              <p>{{ 'collections.general.no_matches' | t }}</p>
+            {% endif %}
+
           {% endfor %}
-        {% else %}
-          <p>{{ 'collections.general.no_matches' | t }}</p>
-        {% endif %}
-
-      {% endfor %}
-    </div>
+        </div>
   </section>
   {% endunless %}
 {% endfor %}

@@ -21,6 +21,7 @@
                       {% capture img_wrapper_id %}ArticleImageWrapper-{{ article.image.id }}{% endcapture %}
                       {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
 
+                    
                       {% include 'image-style', image: article.image, height: 345, wrapper_id: img_wrapper_id, img_id: img_id %}
                         <div  data-image-loading-animation>
                           <img id="{{ img_id }}"
@@ -31,6 +32,14 @@
                               data-sizes="auto"
                               alt="">
                         </div>
+                    {% else %}
+                      <img id="{{ img_id }}"
+                              class="article-featured-img lazyload"
+                              data-src="https://cdn.shopify.com/s/files/1/0534/4532/9074/files/placeholder.png?v=1616349433"
+                              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                              data-aspectratio="{{ article.image.aspect_ratio }}"
+                              data-sizes="auto"
+                              alt="">
                     {% endif %}
                  </a>
                 <div class="article-body">
@@ -88,7 +97,7 @@
       </div>
         {% if section.settings.show_view_all %}
           <a href="{{blog.url}}" title="view all blogs" class="action-block blog-btn text-center  deskMode">
-            <button class="btn-text border-0">
+            <button class="btn-text border-0 box-shadow-71">
               View all blogs
             </button>
           </a>

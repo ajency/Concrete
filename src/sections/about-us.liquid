@@ -1,0 +1,134 @@
+<div class="pageLayout">
+  <div class="testimonial-banner deskMode" style="background:url('{{ section.settings.desktop_image | img_url: 'master' }}') no-repeat">
+    <div class="container">  
+      <div class="banner-content">
+            <h1 style="color: {{section.settings.header_title_color}};">{{section.settings.d_title}}</h1>
+            <p style="color: {{section.settings.subtitle_color}};">{{section.settings.subtitle}}</p>
+        </div>
+    </div>
+  </div>
+  <div class="testimonial-banner mobileMode" style="background:url('{{ section.settings.mob_image | img_url: 'master' }}') no-repeat">
+    <div class="container">
+      <div class="banner-content">
+          <h1 style="color: {{section.settings.mweb_header_title_color}};">{{section.settings.m_title}}</h1>
+          <p style="color: {{section.settings.mweb_subtitle_color}};">{{section.settings.subtitle}}</p>
+      </div>
+    </div>
+  </div>
+  {% if section.blocks.size > 0 %}
+  	<div class="column-layout">
+       {% for block in section.blocks %}
+      <div class="row block-wrapper block-wrapper-ab container m-auto">
+          <div class="col-sm-6 col-xs-12">
+            {%- if block.settings.image != blank -%}
+            	<img class="testimonial-feature-img" alt="Hk vitals" src="{{ block.settings.image | img_url: '600x' }}" />
+            {%- endif -%}
+          </div>
+          <div class="col-sm-6 col-xs-12">
+            <div class="content">
+              <h4 class="title">{{block.settings.title}}</h4>
+              <p class="description">{{block.settings.description}}</p>
+            </div>
+          </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": {
+    "en": "About us"
+  },
+  "class": "index-section",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "mob_image",
+      "label": "Mobile Banner"
+    },
+    {
+      "type": "text",
+      "id": "d_title",
+      "label":"Desktop Heading"
+	},
+    {
+      "type": "color",
+      "id": "header_title_color",
+      "label": "Header Color"
+    },
+    {
+      "type": "text",
+      "id": "m_title",
+      "label":"Mobile Heading"
+	},
+    {
+      "type": "color",
+      "id": "mweb_header_title_color",
+      "label": "Mobile Header Color"
+    },
+	{
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sub Title"
+	},
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "subtitle color"
+    },
+    {
+      "type": "color",
+      "id": "mweb_subtitle_color",
+      "label": "mobile subtitle color"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "aboutus",
+      "name": {
+        "en": "About us content"
+      },
+      "settings": [
+        {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": {
+            "en": "Title"
+          }
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": {
+            "en": "Description"
+          },
+          "default": {
+            "en": "Description"
+          }
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About us Block",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}
+
+

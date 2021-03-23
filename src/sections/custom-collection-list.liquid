@@ -41,9 +41,10 @@ function isImageValid(image_url){
               {%- endfor -%}
             </div>          
           </div>
+          
           <div class="filters">
             <div class="filters-option">
-              <span>Filter Concerns</span>
+              <span class="deskMode">Filter Health Goals</span>
                 <div class="dropdown">
                   <button type="button" class="btn dropdown-toggle  deskMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Show All</button>
                   <button type="button" class="btn dropdown-toggle mobilefilter mobileMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filters{{ 'filter.svg' | asset_url | img_tag: 'filter', 'filter' }}</button>
@@ -133,6 +134,11 @@ function isImageValid(image_url){
                         <p class="subText">{{collection.description}}
                         </p>
                       </div>
+                      {% if collection.metafields.collection_meta.banner_icon != blank %}
+                      <div class="bannerIcon">
+                          <img src="{{collection.metafields.collection_meta.banner_icon}}">
+                      </div>
+                      {% endif %}
                     </div>
                 {% endif %}
               </section>
@@ -159,7 +165,7 @@ function isImageValid(image_url){
                                   {% for tag in tags %}
                                     {% assign index = forloop.index | minus: 1%}
                                     <span>
-                                      {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                                      {% capture tag_slug %}{{ tag | replace: " ", "_" }}{% endcapture %}
                                       {% assign img_svg = tag_slug | append: '.png'%}
                                       {% assign img_default = tag_slug | append: '.png'%}
                                       <script>
@@ -187,29 +193,25 @@ function isImageValid(image_url){
                                  <div class="price-bar">
                                     <div>
                                       <p class="product__price product-price">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros | remove: "," }}</p>
-                                      {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+                                      {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price  %}
                                       <span class="product-sale-price" data-compare-price>
                                         {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
                                       </span>
                                       {% endif %}
+                                      {% if product.selected_or_first_available_variant.compare_at_price != blank %}
                                       <span class="product-offer">
                                         {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
                                         {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
                                         ({{ results }}% Off)
                                       </span>
+                                      {% endif %}
                                     </div>
-                                    <div class="add-btn">
-                                       <button
-                                          type="submit"
-                                          name="add"
-                                          class="btn-text"
-                                          data-submit-button
-                                          {% unless current_variant.available %}disabled="disabled"{% endunless %}>
-                                            <span data-submit-button-text>
-                                                + Add*
-                                            </span>
-                                        </button>
-                                    </div>
+                                   <form method="post" action="/cart/add">
+                                     <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                                     <div class="add-btn">
+                                       <input type="submit" value="+ Add*" class="btn btn-text" />
+                                     </div>
+                                   </form>
                                  </div>
                                </div>
                             </div>
@@ -280,6 +282,11 @@ function isImageValid(image_url){
                 <p class="subText">{{collection.description}}
                 </p>
             </div>
+            {% if collection.metafields.collection_meta.banner_icon != blank %}
+              <div class="bannerIcon">
+                <img src="{{collection.metafields.collection_meta.banner_icon}}">
+              </div>
+             {% endif %}
           </div>
           {% endif %}
         </section>
@@ -331,7 +338,7 @@ function isImageValid(image_url){
                       {% for tag in tags %}
                       {% assign index = forloop.index | minus: 1%}
                       <span>
-                        {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                        {% capture tag_slug %}{{ tag | replace: " ", "_" }}{% endcapture %}
                         {% assign img_svg = tag_slug | append: '.png'%}
                         {% assign img_default = tag_slug | append: '.png'%}
                         <script>
@@ -364,24 +371,21 @@ function isImageValid(image_url){
                             {{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros | remove: "," }}
                           </span>
                           {% endif %}
+                          {% if product.selected_or_first_available_variant.compare_at_price != blank %}
                           <span class="product-offer">
                             {% assign savePrice = product.selected_or_first_available_variant.compare_at_price | minus: product.selected_or_first_available_variant.price %}
                             {% assign results = 0.000 | plus:savePrice | divided_by: product.selected_or_first_available_variant.compare_at_price | times: 100 | round %}
                             ({{ results }}% Off)
                           </span>
+                          {% endif %}
                         </div>
-                        <div class="add-btn">
-                          <button
-                                  type="submit"
-                                  name="add"
-                                  class="btn-text"
-                                  data-submit-button
-                                  {% unless current_variant.available %}disabled="disabled"{% endunless %}>
-                            <span data-submit-button-text>
-                              + Add*
-                            </span>
-                          </button>
-                        </div>
+
+                        <form method="post" action="/cart/add">
+                          <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                          <div class="add-btn">
+                            <input type="submit" value="+ Add*" class="btn btn-text" />
+                          </div>
+                        </form>
                       </div>
                     </div>
                   </div>
@@ -486,6 +490,7 @@ function isImageValid(image_url){
 }
 {% endschema %}
 <script>
+
   //show all categories
   var _showCategories = function(item) {
     for (var x = 0; x < item.length; ++x) {
@@ -551,6 +556,7 @@ function isImageValid(image_url){
     _showCategories(categories);
 
     $('input[type="checkbox"]').click(function(){ //".checkbox" change 
+      $('.nav li.nav-item a').removeClass('active');
       if($('input[type="checkbox"]:checked').length == $('input[type="checkbox"]').length){
         $('#checkAll').prop('checked',true);
         $('.results > li').fadeIn('fast');
@@ -560,6 +566,13 @@ function isImageValid(image_url){
       }
     });
   }); 
+  
+  $('.nav li.nav-item a').click(function() {
+    $('.filtered-data').hide();
+    $('div.tags').find('input:checked').each(function() {
+      $('input[type="checkbox"]:checked').prop('checked',false);
+    }); 
+  });
     
   $('.nav li.nav-item').find('a').click(function() {
     var filterType =  $(this).attr('id');
@@ -586,6 +599,11 @@ function isImageValid(image_url){
         }
       }
     }
+    var uri = window.location.toString();
+  if (uri.indexOf("?") > 0) {
+      var clean_uri = uri.substring(0, uri.indexOf("?"));
+      window.history.replaceState({}, document.title, clean_uri);
+  }
   });    
 
   (function ($) {
@@ -603,13 +621,13 @@ function isImageValid(image_url){
             $('input[name="collection-name"]:checked').each(function(){
               text.push($("label[for='"+$(this).attr('id')+"']").text().trim()+'|'+$(this).attr('id'));
             });
-            $('.tag').empty('<span class="tag-name"><span aria-hidden="true" id="close-tag" class="icon">×</span></span>');
+            $('.tag').empty('<span class="tag-name"><span aria-hidden="true" id="close-tag" class="icon">{{ 'grey-close.svg' | asset_url | img_tag: 'close-icon' }}</span></span>');
             for (var i=0; i < text.length; i++){
               var temp =  [];
               temp = text[i].split('|');
-               var taggedName = $('.tag').append('<span class="tag-name" id='+temp[1]+'_a'+'>' +  temp[0]  + '<span onclick="closeTags()" aria-hidden="true" class="icon">×</span></span>');
+               var taggedName = $('.tag').append('<span class="tag-name" id='+temp[1]+'_a'+'>' +  temp[0]  + '<span onclick="closeTags()" aria-hidden="true" class="icon">{{ 'grey-close.svg' | asset_url | img_tag: 'close-icon' }}</span></span>');
               if(i == (text.length - 1)){
-                $('.tag').append('<a onclick="clearTags()" class="link clear" id="clearTags">Clear All</a>');
+                $('.tag').append('<a onclick="clearTags()" class="link clear" id="clearTags">{{ 'blue-close.svg' | asset_url | img_tag: 'close-icon', 'mobileMode ' }} Clear All</a>');
               }
             }
         });
@@ -617,48 +635,53 @@ function isImageValid(image_url){
   })(jQuery); 
   
   function closeTags(){
-    $('.tag span.tag-name').click(function(){
+      $('.tag span.tag-name').click(function(){
     $('.results li').hide();
-      var val = $(this).attr('id');
-      $('#'+val).remove();
+        var val = $(this).attr('id');
+        $('#'+val).remove();
 
-      var text = [];
-      var tmpt = [];
-      tmpt = val.split('_');
-      $('input[name="collection-name"]:checked').each(function(){
-        text.push($(this).attr('id'));
-      });
-      for ( var x=0; x< text.length; x++){
-        //tmpt[x] = text[x].split('_');
-        if(tmpt[0] == text[x]){
-            $('#' + text[x]).prop('checked', false);
+        var text = [];
+        var tmpt = [];
+        tmpt = val.split('_');
+        $('input[name="collection-name"]:checked').each(function(){
+          text.push($(this).attr('id'));
+        });
+        for ( var x=0; x< text.length; x++){
+          //tmpt[x] = text[x].split('_');
+          if(tmpt[0] == text[x]){
+              $('#' + text[x]).prop('checked', false);
+          }
+          
         }
+        var categories = [];
+          var newArr = [];
+            $('input[name="collection-name"]:checked').each(function(){
+              
+              newArr.push($(this).attr('id'));
+              
+            });
+        if(newArr.length != 0){
+          for(var a=0; a < newArr.length ; a++){
+           $(".results > li." + newArr[a]).fadeIn()
+             $(newArr[a]).fadeIn(); 
+          }
+        }else{
+            $('#clearTags').remove();
+        $('.tag span').remove();
+            $('.results li').hide();
+            $('.results > li').fadeIn('fast');
+            {% for collection in collections %}
+          var catId = "category-{{collection.id}}";
+            categories.push(catId); 
+            {% endfor %}
+        _showCategories(categories);
         
-      }
-      var categories = [];
-        var newArr = [];
-          $('input[name="collection-name"]:checked').each(function(){
-            
-            newArr.push($(this).attr('id'));
-            
-          });
-      if(newArr.length != 0){
-        for(var a=0; a < newArr.length ; a++){
-         $(".results > li." + newArr[a]).fadeIn()
-           $(newArr[a]).fadeIn(); 
         }
-      }else{
-          $('#clearTags').remove();
-      $('.tag span').remove();
-          $('.results li').hide();
-          $('.results > li').fadeIn('fast');
-          {% for collection in collections %}
-        var catId = "category-{{collection.id}}";
-          categories.push(catId); 
-          {% endfor %}
-      _showCategories(categories);
-      
-      }
+        var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
     });
   }
 
@@ -667,26 +690,33 @@ function isImageValid(image_url){
     $('.tag span').remove();
     $('.filtered-data').hide();
 
-    var text1 = [];
-    var categoriesId = [];
-      $('input[name="collection-name"]:checked').each(function(){
-        
-        text1.push($("label[for='"+$(this).attr('id')+"']").text().trim()+'|'+$(this).attr('id'));
-
-      });
+       var text1 = [];
+      var categoriesId = [];
+            $('input[name="collection-name"]:checked').each(function(){
+              
+              text1.push($("label[for='"+$(this).attr('id')+"']").text().trim()+'|'+$(this).attr('id'));
+       
+            });
 
     var checkName = [];
-      for ( var x=0; x< text1.length; x++){
-        checkName = text1[x].split('|');
-        
-            $('#'+ checkName[1]).prop('checked', false);
-           
-      }
-      {% for collection in collections %}
-      var catId = "category-{{collection.id}}";
-      categoriesId.push(catId); 
-      {% endfor %}
-      $('.results > li').fadeIn('fast');
-      _showCategories(categoriesId);
+        for ( var x=0; x< text1.length; x++){
+          checkName = text1[x].split('|');
+          
+              $('#'+ checkName[1]).prop('checked', false);
+             
+        }
+        {% for collection in collections %}
+        var catId = "category-{{collection.id}}";
+        categoriesId.push(catId); 
+        {% endfor %}
+        $('.results > li').fadeIn('fast');
+        _showCategories(categoriesId);
+    
+            var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
   }
+
 </script>  

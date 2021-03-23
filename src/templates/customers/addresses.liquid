@@ -144,7 +144,8 @@
                             {{ 'close.svg' | asset_url | img_tag: 'close', 'close' }}
                           </a>
                           <h5 class="modal-title">{{ 'customer.addresses.edit_address' | t }}</h5>
-                          <button type="button" class="close deskMode" data-dismiss="modal">&times;</button>
+                          <a class="close deskMode" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span></a>
                         </div>
                         <!-- end modal header-->
                         <!-- modal body -->
@@ -193,12 +194,13 @@
                               <input type="tel" id="address_phone_{{ form.id }}" class="form-control" name="address[phone]" value="{{ form.phone }}" placeholder="+91 800800000">
                             </div>
 
-
-                            <div class="modal-footer view-btn mt-0">
+              </div>
+                            <div class="modal-footer view-btn mt-0 padding-0">
                               {{ form.set_as_default_checkbox }}
                               <label for="address_default_address_new" class="inline">{{ 'customer.addresses.set_default' | t }}</label>
                               <div class="buttons view-btn">
-                                <input type="submit" class="btn" value="{{ 'customer.addresses.update' | t }}">
+                                <input type="submit" class="btn deskMode" value="{{ 'customer.addresses.update' | t }}">
+                                <input type="submit" class="btn mobileMode" value="Save changes">
                               </div>
                             </div>
                           </div>

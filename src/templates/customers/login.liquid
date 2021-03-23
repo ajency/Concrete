@@ -28,7 +28,7 @@
             <input type="password"
                    name="customer[password]"
                    id="CustomerPassword"
-                   class="customer-input{% if form.errors contains 'password' %}input-error{% endif %}"
+                   class="customer-input {% if form.errors contains 'password' %}input-error{% endif %}"
                    placeholder="{{ 'customer.login.password' | t }}">
           {% endif %}
       {{ form.errors | default_errors }}
@@ -65,7 +65,7 @@
       <span data-form-state></span>
     {% endif %}
 
-<!-- <label for="RecoverEmail" class="label-hidden">
+<!--     <label for="RecoverEmail" class="label-hidden">
       {{ 'customer.recover_password.email' | t }}
     </label> -->
     <input type="email"

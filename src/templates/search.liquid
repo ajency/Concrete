@@ -1,3 +1,11 @@
+<script>
+function isImageValid(image_url){
+    var http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return (http.status != 404);
+}
+</script>
 {% paginate search.results by 10 %}
 <div class="search">
   <div class="container">
@@ -10,60 +18,105 @@
       {% endif %}
     </h2>
 
-    <form action="/search" method="get" role="search" class="search-form">
+<!--     <form action="/search" method="get" role="search" class="search-form">
       <input type="search"
              name="q"
              id="Search"
              class="input-search"
              value="{{ search.terms | escape }}"
-             placeholder="{{ 'general.search.placeholder' | t }}">
+             placeholder="{{ 'general.search.placeholder' | t }}"
+             >
       <button type="submit" class="button">
-         {{ 'search.svg' | asset_url | img_tag: 'search', 'search' }}
+        <span>{{ 'search.svg' | asset_url | img_tag: 'search', 'search' }}</span>
       </button>
-    </form>
+    </form> -->
 
     {% if search.performed %}
       {% if search.results_count == 0 %}
         <p class="no-result">{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
       {% else %}
         <h2 class="visually-hidden">{{ 'general.search.heading' | t: count: search.results_count }}</h2>
-        <ul>
+        <ul class="suggested-products search-card">
           {% for item in search.results %}
-            <li>
+            <li class="product-card">
               <a href="{{ item.url | within: collection }}">
                 {% assign featured_image = item.image | default: item.featured_image %}
+                <div class="product-image-card">
                 {% if featured_image != blank %}
-                  {{ featured_image | img_url: '240x240' | img_tag }}
+                  <div class="product-img">
+                  {{ featured_image | img_url: '240x240' | img_tag , 'product__img' }}
+                  </div>
                 {% endif %}
-                <h3>{{ item.title }}</h3>
+                  <div class="product-tags">
+                      {% assign tags = item.metafields.product_meta.product_card_tags | split: ";" %}
+                      {% assign tags_text = item.metafields.product_meta.product_card_tags_text | split: ";" %}
+                      {% for tag in tags %}
+                        {% assign index = forloop.index | minus: 1%}
+                        <span>
+                          {% capture tag_slug %}{{ tag | replace: " ", "_" }}{% endcapture %}
+                          {% assign img_svg = tag_slug | append: '.png'%}
+                          {% assign img_default = tag_slug | append: '.png'%}
+                          <script>
+                            $(document).ready(function(){
+                              var valid_image = isImageValid('{{ img_svg | file_url }}');
+                                if(!valid_image){
+                                  $('.item-highlight-{{ forloop.index }}').attr('src', '{{ img_default | file_url }}');
+                                }
+                            });
+                          </script>          
+                          <img class='item-highlight-{{ forloop.index }}' src="{{ img_svg | file_url }}" alt="{{ tag_slug | escape }}">{{ tags_text[index] }}
+                        </span>
+                      {% endfor %}
+                  </div>
+                </div>
+                <div class="row"> 
+                  <div class="product-description">         
+                      <div class="product-details position-relative">
+                        <p class="product__title">{{ item.title }}</p>
+                        <span class="search-item-description">{{item.metafields.product_meta.product_des}}</span>
+                      </div>
+                        {% if item.object_type == 'product' %}
+                     <div class="price-bar">
+                          <div>
+                              {% if item.compare_at_price > item.price %}
+                               
+                                  {% assign sale_price = item.price | money %}
+                                  <p class="product__price">{{ item.price | money }}</p>
+                                
+                                <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                                <span class="product-sale-price" data-compare-price>{{ item.compare_at_price | money }}</span>
+                              {% else %}
+                                {% if item.price_varies %}
+                                  {% assign price = item.price | money %}
+                                  <p>{{ 'products.product.from_text_html' | t: price: price }}</p>
+                                {% else %}
+                                  <p class="product__price">{{ item.price | money }}</p>
+                                {% endif %}
+                              {% endif %}
+                              {% unless item.available %}
+                              {{ 'products.product.sold_out' | t }}
+                              {% endunless %}
+                              {% if item.compare_at_price != blank %}
+                                  <span class="product-offer">
+                                  {% assign savePrice = item.compare_at_price | minus: item.price %}
+                                  {% assign results = 0.000 | plus:savePrice | divided_by: item.compare_at_price | times: 100 | round %}
+                                  ({{ results }}% Off)
+                                 </span>
+                               {% endif %}
+                        </div>
+                        <form method="post" action="/cart/add">
+                              <input type="hidden" name="id" value="{{ item.variants.first.id }}" />
+                              <div class="add-btn">
+                                <input type="submit" value="+ Add*" class="btn btn-text" />
+                              </div>
+                        </form>
+                      </div>
+                      {% else %}
+                        <p>{{ item.content | strip_html | truncatewords: 50 }}</p>
+                      {% endif %}
+                  </div>
+                </div>
               </a>
-              {% if item.object_type == 'product' %}
-                <p>
-                  {% if item.compare_at_price > item.price %}
-                    {% if item.price_varies %}
-                      {% assign sale_price = item.price | money %}
-                      {{ 'products.product.on_sale_from_html' | t: price: sale_price }}
-                    {% else %}
-                      {{ 'products.product.on_sale' | t }}
-                      <span>{{ item.price | money }}</span>
-                    {% endif %}
-                    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-                    <s>{{ item.compare_at_price | money }}</s>
-                  {% else %}
-                    {% if item.price_varies %}
-                      {% assign price = item.price | money %}
-                      <span>{{ 'products.product.from_text_html' | t: price: price }}</span>
-                    {% else %}
-                      <span>{{ item.price | money }}</span>
-                    {% endif %}
-                  {% endif %}
-                  {% unless item.available %}
-                  {{ 'products.product.sold_out' | t }}
-                  {% endunless %}
-                </p>
-              {% else %}
-                <p>{{ item.content | strip_html | truncatewords: 50 }}</p>
-              {% endif %}
 
             </li>
           {% endfor %}

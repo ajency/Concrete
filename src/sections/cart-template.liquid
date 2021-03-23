@@ -1,6 +1,6 @@
 
 <div class="cart" data-section-id="{{ section.id }}" data-section-type="cart-template" data-ajax-enabled="{{ section.settings.cart_ajax_enable }}">
-	<div class="container">
+  <div class="container">
     <div {% if cart.item_count == 0 %}class="hide" {% endif %}data-cart-wrapper>
       <form action="{{ routes.cart_url }}" method="post" novalidate class="cart">
         <div>
@@ -11,7 +11,7 @@
                 <div class="col-md-7 col-sm-12 small--text-left" data-cart-table-cell>
                   <div class="cart-header">
                         <h3 class="cart-header__title">{{ 'cart.general.title' | t }}</h3>
-                    	<span class="cart-item-count">({{ cart.item_count }} {% if cart.item_count == 1 %}Item{% else%}Items{% endif %})</span>
+                      <span class="cart-item-count">({{ cart.item_count }} {% if cart.item_count == 1 %}Item{% else%}Items{% endif %})</span>
                   </div>
                   <div class="divider"></div>
                   {%- for item in cart.items -%}
@@ -34,13 +34,13 @@
                         <div class="price-details">
                           <div class="item-price th_do_item_price"><span class='hulkapps-cart-item-price' data-key='{{item.key}}'>{{ item.price | money }}</span></div>
                           <del class="sale-price">{{ item.variant.compare_at_price | money }}</del>
-                          	<span id="savePrice" class="m-text17a p-r-10">
+                            <span id="savePrice" class="m-text17a p-r-10">
                               {% assign savePrice = item.variant.compare_at_price | minus: item.price  %}
                               {% assign results = 0.000 | plus:savePrice | divided_by: item.variant.compare_at_price | times: 100 | round %}
                               ({{ results }}% Off)
-                      		</span>
+                          </span>
                         </div>
-            			{%- assign inv_man = item.variant.inventory_management -%}{%- assign inv_qua = item.variant.inventory_quantity | plus: 0 -%}{%- unless inv_man -%}{%- assign inv_qua = 100000 -%}{%- endunless -%}{%- if item.variant.available and inv_qua <= 0 -%}{%- assign inv_qua = 100000 -%}{%- endif -%}
+                  {%- assign inv_man = item.variant.inventory_management -%}{%- assign inv_qua = item.variant.inventory_quantity | plus: 0 -%}{%- unless inv_man -%}{%- assign inv_qua = 100000 -%}{%- endunless -%}{%- if item.variant.available and inv_qua <= 0 -%}{%- assign inv_qua = 100000 -%}{%- endif -%}
 
                         <div class="flex-w of-hidden w-size17 qty-wrapper">
                           <button {% if quantity == true %}disabled{% endif %}  class="btn-num-product-down color1 flex-c-m quantity-button eff2">
@@ -51,7 +51,7 @@
                           <button  {% if item.quantity == inv_qua %} disabled {% endif %} class="btn-num-product-up color1 flex-c-m quantity-button eff2">
                             <i class="fs-12 fa fa-plus" aria-hidden="true"></i>
                           </button>
-                      	</div>
+                        </div>
                       </div>
                       <a class="remove" href="/cart/change?line={{ forloop.index }}&amp;quantity=0" class="cart__remove">
                         <small>{{ 'cart.general.remove' | t }}</small>
@@ -188,7 +188,7 @@
                         class="cart__submit btn btn--small-wide"
                         value="checkout">
                     </div>
-                    	{%- if section.settings.cart_notes_enable -%}
+                      {%- if section.settings.cart_notes_enable -%}
                           <div class="cart-note">
                             <span for="CartSpecialInstructions" class="cart-note__label small--text-center">{{ 'cart.general.note' | t }}</span>
                           </div>

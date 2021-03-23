@@ -1,6 +1,6 @@
 {% paginate blog.articles by 12 %}
 <div class="latest-articles blog-listing">
-<div class="page-width container">
+<div class="container">
   <header class="section-block text-center">
     <h3 class="title">All Articles</h3>
 <!--     {% if blog.tags.size > 0 %}
@@ -50,6 +50,14 @@
                         {{ article | img_url: '345x345', scale: 2 | img_tag: article.title, 'article__grid-image' }}
                       </div>
                     </noscript>
+                  {% else %}
+                      <img id="{{ img_id }}"
+                              class="article-featured-img lazyload"
+                              data-src="https://cdn.shopify.com/s/files/1/0534/4532/9074/files/placeholder.png?v=1616349433"
+                              data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                              data-aspectratio="{{ article.image.aspect_ratio }}"
+                              data-sizes="auto"
+                              alt="">
                   {% endif %}
                    </a>
                   <div class="article-body">
@@ -59,7 +67,7 @@
                           {{ article.title | escape }}
                         </a>
                       </h2>
-                      <div class="{% if article.image %} article__grid-meta{% endif %}">
+                      <div class=" article__grid--meta{% if article.image %} article__grid-meta{% endif %}">
                         {% if section.settings.blog_show_author %}
                           <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
                         {% endif %}
@@ -109,10 +117,10 @@
                         </li>
                         {% endif %}
                       </ul> -->
-                  </div>	
+                  </div>  
                 </div>
             {% endfor %}
-      	</div>
+        </div>
       {% if blog.articles_count > 3 %} 
         <div class="w-100 text-center view-btn">
           <button id="loadmore" class="btn btn-lg view-btn-blue view-more-btn">Load more</button>

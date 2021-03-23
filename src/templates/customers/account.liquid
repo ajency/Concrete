@@ -36,39 +36,44 @@
           <a href="/account/addresses" class="view-address">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
 
       </div>
-      <div role="tabpanel" class="tab-pane" id="orders">
-        {% paginate customer.orders by 20 %}
-          {% if customer.orders.size != 0 %}
-            <div class="product-order-card">
-              {% for order in customer.orders %}
+       <div role="tabpanel" class="tab-pane" id="orders">
+          <h3 class="header">My Orders</h3>
+          {% paginate customer.orders by 20 %}
+            {% if customer.orders.size != 0 %}
+              <div class="product-order-card">
 
-                <div class="order-name">
-                    <div class="order-id">
-                        {{ order.name | link_to: order.customer_url }}
-                    </div>
-                    <div class="product-name">
-                        {% for line_item in order.line_items %}
-                        {{ line_item.title | link_to: line_item.product.url }}
-                        {% endfor %}
-                    </div>
-                </div>
+                  {% for order in customer.orders %}
 
-                <div class="product-order-price">
-                    <p class="price">{{ order.total_price | money }}</p>
-                </div>
-                <div class="product-order-status">
-                  <p class="status">{{ order.financial_status_label }}</p>
-                  <p class="date">Placed on: {{ order.created_at | date: format: 'month_day_year' }}</p>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <p>{{ 'customer.orders.none' | t }}</p>
-          {% endif %}
+                        <div class="order-name">
+                            <div class="order-id">
+                                {{ order.name | link_to: order.customer_url }}
+                            </div>
+                            <div class="product-name">
+                                {% for line_item in order.line_items %}
+                                {{ line_item.title | link_to: line_item.product.url }}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="product-order-price">
+                            <p class="price">{{ order.total_price | money }}</p>
+                        </div>
+                        <div class="product-order-status">
+                          <p class="status">{{ order.financial_status_label }}</p>
+                          <p class="date">Placed on: {{ order.created_at | date: format: 'month_day_year' }}</p>
+                        </div>
+                  {% endfor %}
+              </div>
+            {% else %}
+              <p>{{ 'customer.orders.none' | t }}</p>
+            {% endif %}
+
         {% if paginate.pages > 1 %}
           {% render 'pagination' %}
         {% endif %}
+
       {% endpaginate %}
+      </div>
     </div>
   </div>
 </div>

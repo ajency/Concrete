@@ -23,6 +23,7 @@
 {% capture media_id %}FeaturedMedia-{{ section.id }}-{{ media.id }}{% endcapture %}
 {% capture media_class %}product-featured-media{% endcapture %}
 {% capture media_wrapper_id %}{{ media_id }}-wrapper{% endcapture %}
+{% assign variant = product.variants | where: 'id', variant_id %}
 
 {%- comment -%}
   Load different poster image sizes depending on the product layout
@@ -31,16 +32,21 @@
 <div
     class="product-single__media-wrapper js"
     tabindex="-1">
+      
       {%- assign img_url = media | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
       <div
         style="padding-top:{{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100}}%;"
         class="product-single__media"
+            id="product-single__image-wrapper"
         data-image-loading-animation>
         <img
+          id="{{ media_id }}"
           class="feature-row__image lazyload"
           data-src="{{ img_url }}"
           data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
           data-sizes="auto"
-          alt="{{ media.alt | escape }}">
+          alt="{{ media.alt | escape }}"
+          >
       </div>
 </div>
+

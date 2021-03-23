@@ -1,3 +1,11 @@
+<script>
+function isImageValid(image_url){
+    var http = new XMLHttpRequest();
+    http.open('HEAD', image_url, false);
+    http.send();
+    return (http.status != 404);
+}
+</script>
 {%- if section.settings.show_product_recommendations -%}
   {%- if recommendations.performed -%}
     {%- if recommendations.products_count > 0 -%}
@@ -20,11 +28,10 @@
                       {% for tag in tags %}
                         {% assign index = forloop.index | minus: 1%}
                         <span>
-                          {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+                          {% capture tag_slug %}{{ tag | replace: " ", "_" }}{% endcapture %}
                           {% assign img_svg = tag_slug | append: '.png'%}
                           {% assign img_default = tag_slug | append: '.png'%}
                           <script>
-                            $.noConflict();
                             $(document).ready(function(){
                               var valid_image = isImageValid('{{ img_svg | file_url }}');
                                 if(!valid_image){
@@ -53,24 +60,20 @@
                               {% endif %}
                             </span>
                           {% endif %}
+                           {% if product.compare_at_price != blank %}
                           <span class="product-offer">
                             {% assign savePrice = product.compare_at_price | minus: product.price %}
                               {% assign results = 0.000 | plus:savePrice | divided_by: product.compare_at_price | times: 100 | round %}
                                ({{ results }}% Off)
                            </span>
+                          {% endif %}
                         </div>
-                        <div class="add-btn">
-                           <button
-                              type="submit"
-                              name="add"
-                              class="btn-text"
-                              data-submit-button
-                              {% unless current_variant.available %}disabled="disabled"{% endunless %}>
-                                <span data-submit-button-text>
-                                    + Add*
-                                </span>
-                            </button>
-                        </div>
+                        <form method="post" action="/cart/add">
+                          <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+                          <div class="add-btn">
+                            <input type="submit" value="+ Add*" class="btn btn-text" />
+                          </div>
+                        </form>
                      </div>
                    </div>
                 </div>
