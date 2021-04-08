@@ -23,7 +23,7 @@
 
 {% if section.settings.layout == 'grid' %}
   <div class="latest-articles-cards featured-latest-articles all-artciles">
-    <div class="grid container grid--uniform grid--blog">
+    <div class="container grid--uniform grid--blog">
           <div class="row">
             {% for article in blog.articles %}
              <div class="article-card col-md-4 col-sm-12 grid__item" index='{{forloop.index}}'>

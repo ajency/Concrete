@@ -1,0 +1,31 @@
+{%- assign is_filter_by_available = false -%}
+{%- if section.settings.tags_enable and collection.all_tags.size > 0 -%}
+{%- assign is_filter_by_available = true -%}
+{%- endif -%} 
+<div class="filters-toolbar-wrapper{% if is_filter_by_available %} filters-toolbar--has-filter{% endif %}">
+  <div class="filters-toolbar">
+    <div class="filters-toolbar__item-wrapper">
+      {% if section.settings.sort_enable %}
+      <span class="deskMode">Sort By</span>
+      <div class="filters-toolbar__item-child">
+        {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+        <div class="filters-toolbar__input-wrapper select-group">
+          <select name="sort_by" id="SortBy"
+                  class="filters-toolbar__input hidden"
+                  aria-describedby="a11y-refresh-page-message a11y-selection-message"
+                  data-default-sortby="{{ collection.default_sort_by }}"
+                  data-select-input
+                  >
+            <option value="price-ascending" {% if sort_by == "price-ascending" %} selected="selected"{% endif %}>Price: Low to High</option>
+            <option value="price-descending" {% if sort_by == "price-descending" %} selected="selected"{% endif %}>Price: High to Low</option>
+            <option value="title-ascending" {% if sort_by == "title-ascending" %} selected="selected"{% endif %}>Name A-Z</option>
+            <option value="title-descending" {% if sort_by == "title-descending" %} selected="selected"{% endif %}>Name Z-A</option>
+
+          </select>
+          {% include 'icon-chevron-down' %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

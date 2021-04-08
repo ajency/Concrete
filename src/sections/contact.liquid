@@ -53,11 +53,11 @@
             {{- form.body -}}
           {%- endif -%}
         </textarea>
-      	<div class="form-group">
-      		<label for="terms" class="note"><input type="checkbox" name="terms" id="terms" value="" checked="checked">          
-      		I have read and agree to HK Vital's<strong> terms and conditions</strong></label>
-      	</div>
-      	<input type="submit" class="button send" value="{{ 'contact.form.send' | t }}">
+        <div class="form-group">
+          <label for="terms" class="note"><input type="checkbox" name="terms" id="terms" value="" checked="checked">          
+          I have read and agree to HK Vital's<strong> terms and conditions</strong></label>
+        </div>
+        <input type="submit" class="button send" value="{{ 'contact.form.send' | t }}">
       {% endform %}
     </div>
   </div>
@@ -66,8 +66,8 @@
         <h4 class="title">{{section.settings.title}}</h4>
         <p class="detail">{{section.settings.address}}</p>
         <div class="links">
-        	{{section.settings.phone-number}}
-        	{{section.settings.email}}
+          {{section.settings.phone-number}}
+          {{section.settings.email}}
         </div>
       </div>
     </div>
@@ -82,13 +82,13 @@
           "type": "header",
           "content": "Form Details"
       },
-	  {
+    {
         "type": "text",
         "id": "heading",
         "label": "Page Header",
         "default": "Get in Touch"
       },
-	  {
+    {
         "type": "text",
         "id": "subHeading",
         "label": "Page Subheading"
@@ -97,29 +97,29 @@
           "type": "header",
           "content": "Address Details"
       },
-	  {
+    {
         "type": "text",
         "id": "title",
         "label": "Title",
         "default": "Reach our office"
       },
-	  {
+    {
         "type": "text",
         "id": "address",
         "label": "Address",
-		"default": "address"
+    "default": "address"
       },
-	  {
+    {
         "type": "richtext",
         "id": "phone-number",
         "label": "Phone Number"
       },
-	  {
+    {
         "type": "richtext",
         "id": "email",
         "label": "Email Id"
       }
-	]
+  ]
   }
 {% endschema %}
 

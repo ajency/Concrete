@@ -22,65 +22,65 @@
 <div class="home-banner">
   {%- if section.blocks.size > 0 -%}
     
-  <div class="banner-slider slider">
-    {%- for block in section.blocks -%}
-    <div>
-        {%- assign block_image = block.settings.desk_image -%}
-<!--      <div class="banner-img">
-            {%- if block.settings.desk_image != blank -%}
-            {%- if block.settings.size != blank -%}
-                {% assign bannersize = block.settings.size %}
-            {%- else -%}
-                {% assign bannersize = '2000x2000' %}
-            {%- endif -%} 
-            <img class="img-full-mobile deskMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.desk_image | img_url: bannersize }}" />
-            <img class="img-full-mobile mobileMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.mob_image | img_url: bannersize }}" />
-            {%- else -%}
-            <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ bannersize }}" />
-            {%- endif -%}
-          </div> -->
-          {%- if block.settings.desk_image != blank -%}
-              {%- if block.settings.size != blank -%}
-                  {% assign bannersize = block.settings.size %}
-              {%- else -%}
-                  {% assign bannersize = '2000x2000' %}
-              {%- endif -%} 
-              <div class="banner-img deskMode" style="background:url('{{ block.settings.desk_image | img_url: bannersize }}') top right no-repeat"></div>
-              <div class="banner-img mobileMode" style="background:url('{{ block.settings.mob_image | img_url: bannersize }}') top right no-repeat"></div>
-              <div class="container">
-              <div class="banner-info">
-                  {% unless block.settings.slide_title == blank and block.settings.subheading == blank %}
-                    <div class="title">
-                      {%- unless block.settings.slide_title == blank -%}
-                          <h2 class="title">
-                            {{ block.settings.slide_title | escape }}
-                          </h2>
-                      {%- endunless -%}
-                      {%- unless block.settings.subheading == blank -%}
-                          <p class="sub-title">
-                            {{ block.settings.subheading | escape }}
-                          </p>
-                      {%- endunless -%}
-                    </div>
-                  {% endunless %}
+      <div class="banner-slider slider">
+        {%- for block in section.blocks -%}
+        <div>
+            {%- assign block_image = block.settings.desk_image -%}
+<!--                 <div class="banner-img">
+                      {%- if block.settings.desk_image != blank -%}
+                     {%- if block.settings.size != blank -%}
+                          {% assign bannersize = block.settings.size %}
+                      {%- else -%}
+                          {% assign bannersize = '2000x2000' %}
+                      {%- endif -%} 
+                      <img class="img-full-mobile deskMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.desk_image | img_url: bannersize }}" />
+                      <img class="img-full-mobile mobileMode" alt="{{ block.settings.heading | escape }}" src="{{ block.settings.mob_image | img_url: bannersize }}" />
+                      {%- else -%}
+                      <img class="img-responsive img-full-mobile" alt="{{ shop.name }}" src="//placehold.it/{{ bannersize }}" />
+                      {%- endif -%}
+                </div> -->
+              {%- if block.settings.desk_image != blank -%}
+                     {%- if block.settings.size != blank -%}
+                          {% assign bannersize = block.settings.size %}
+                      {%- else -%}
+                          {% assign bannersize = '2000x2000' %}
+                      {%- endif -%} 
+                  <div class="banner-img deskMode" style="background:url('{{ block.settings.desk_image | img_url: bannersize }}') top right no-repeat"></div>
+                  <div class="banner-img mobileMode" style="background:url('{{ block.settings.mob_image | img_url: bannersize }}') top right no-repeat"></div>
+                <div class="container">
+                <div class="banner-info">
+                    {% unless block.settings.slide_title == blank and block.settings.subheading == blank %}
+                      <div class="title">
+                        {%- unless block.settings.slide_title == blank -%}
+                            <h2 class="title">
+                              {{ block.settings.slide_title | escape }}
+                            </h2>
+                        {%- endunless -%}
+                        {%- unless block.settings.subheading == blank -%}
+                            <p class="sub-title">
+                              {{ block.settings.subheading | escape }}
+                            </p>
+                        {%- endunless -%}
+                      </div>
+                    {% endunless %}
 
-                  {%- assign show_link_button = false -%}
-                  {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
-                    {%- assign show_link_button = true -%}
-                  {%- endif -%}
-                  {%- if show_link_button -%}
-                    <div class="view-btn">
-                      <a class="view-btn-blue" href="{{ block.settings.button_link }}" class="btn slideshow__btn">
-                        {{ block.settings.button_label | escape }}
-                      </a>
-                    </div>
-                  {%- endif -%}
+                    {%- assign show_link_button = false -%}
+                    {%- if block.settings.button_label != blank and block.settings.button_link != blank -%}
+                      {%- assign show_link_button = true -%}
+                    {%- endif -%}
+                    {%- if show_link_button -%}
+                      <div class="view-btn">
+                        <a class="view-btn-blue" href="{{ block.settings.button_link }}" class="btn slideshow__btn" title="{{ block.settings.button_label | escape }}">
+                          {{ block.settings.button_label | escape }}
+                        </a>
+                      </div>
+                    {%- endif -%}
+                </div>
               </div>
+              {%- endif -%}
           </div>
-        {%- endif -%}
+        {%- endfor -%}
       </div>
-    {%- endfor -%}
-  </div>
   {%- endif -%}
 </div>
 

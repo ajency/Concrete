@@ -22,12 +22,19 @@ Documentation - http://docs.shopify.com/support/your-website/navigation/creating
       <i class="fa fa-long-arrow-right arrow" aria-hidden="true"></i>
       <li class="deskMode" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span itemprop="name">{{ product.title }}</span><meta itemprop="position" content="{% assign count = count | plus: 1 %}{{ count }}" /></li>
       <li class="mobileMode" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"><span itemprop="name">{{ product.title | truncate: 12 }}</span><meta itemprop="position" content="{{ count }}" /></li>
-
+    
       {%- elsif template contains 'collection' and collection.handle -%}
       {% assign count = 1 %}
       {%- if current_tags -%}
+      <i class="fa fa-long-arrow-right arrow" aria-hidden="true"></i>
       {%- capture url -%}/collections/{{ collection.handle }}{%- endcapture -%}
       <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" ><span itemprop="name">{{ collection.title | link_to: url }}</span><meta itemprop="position" content="{% assign count = count | plus: 1 %}{{ count }}" /></li>
+      <i class="fa fa-long-arrow-right arrow" aria-hidden="true"></i>
+      <li>
+        {% capture tag_url %}{{ collection.url }}/{{ current_tags | join: "+"}}{% endcapture %}
+        <span itemprop="name" aria-current="page">{{ current_tags | join: " + "}}</span>
+        <meta itemprop="position" content="3" />
+      </li>
       {%- else -%}
        <i class="fa fa-long-arrow-right arrow" aria-hidden="true"></i>
     <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" ><span itemprop="name">{{ collection.title | capitalize }}</span><meta itemprop="position" content="{% assign count = count | plus: 1 %}{{ count }}" /></li>

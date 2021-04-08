@@ -12,7 +12,7 @@
         {% assign faq_content = faq_tags[1]%}
         {% if faq_head != blank %}
             <div class='card' index='{{forloop.index}}'>
-                <p data-toggle='collapse' data-target='#product-faq-{{forloop.index}}' >{{faq_head}}</p>
+                <p data-toggle='collapse' data-target='#product-faq-{{forloop.index}}' class="faq_head" >{{faq_head}}</p>
                 <div id='#product-faq-{{forloop.index}}' class='collapse card-opened'>{{faq_content}}</div>
             </div>
           {%if forloop.index > 7 and size == 1 %}

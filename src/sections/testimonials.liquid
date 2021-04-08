@@ -16,12 +16,12 @@
     </div>
   </div>
   {% if section.blocks.size > 0 %}
-  	<div class="column-layout">
+    <div class="column-layout">
        {% for block in section.blocks %}
       <div class="row block-wrapper container m-auto">
           <div class="col-sm-6 col-xs-12">
             {%- if block.settings.image != blank -%}
-            	<img class="testimonial-feature-img" alt="Hk vitals testimonials" src="{{ block.settings.image | img_url: '600x' }}" />
+              <img class="testimonial-feature-img" alt="Hk vitals testimonials" src="{{ block.settings.image | img_url: '600x' }}" />
             {%- endif -%}
           </div>
           <div class="col-sm-6 col-xs-12">
@@ -85,7 +85,7 @@
       "type": "text",
       "id": "d_title",
       "label":"Desktop Heading"
-	},
+  },
     {
       "type": "color",
       "id": "header_title_color",
@@ -95,17 +95,17 @@
       "type": "text",
       "id": "m_title",
       "label":"Mobile Heading"
-	},
+  },
     {
       "type": "color",
       "id": "mweb_header_title_color",
       "label": "Mobile Header Color"
     },
-	{
+  {
       "type": "text",
       "id": "subtitle",
       "label": "Sub Title"
-	},
+  },
     {
       "type": "color",
       "id": "subtitle_color",

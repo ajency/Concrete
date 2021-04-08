@@ -18,7 +18,7 @@
               {%- else -%}
                   {% assign iconsize = '50x50' %}
               {%- endif -%} 
-              <a href="{% if block.settings.category-url != blank %} {{ block.settings.category-url }} {% elsif block.settings.category-url == blank %} javascript:void(0){% endif %}" class="{% if section.settings.classname2 != blank %} {{section.settings.classname2}} {% endif %}" title={{ block.settings.category }}>
+              <a id="{{ block.settings.category }}" href="{% if block.settings.category-url != blank %}{{ block.settings.category-url }}{% elsif block.settings.category-url == blank %}javascript:void(0){% endif %}" class="{% if section.settings.classname2 != blank %} {{section.settings.classname2}} {% endif %}" title="{{ block.settings.category }}" rel="keep-params">
                 {%- if block.settings.image != blank -%}
                     <img class="img-full-mobile" alt="{{ block.settings.category | default: shop.name }}" src="{{ block.settings.image | img_url: iconsize }}" />
                 {%- else -%}

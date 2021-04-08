@@ -1,9 +1,7 @@
 {% section 'blog-header' %}
 {% section 'blog-template' %}
 {% capture blog_url %} {{ blog.url }}/tagged/{{ tag | handle }}{% endcapture %}
-{% unless blog_url %}
   {% section 'featured-blog-listing' %}
-{% endunless %}
 <!-- 
 <!-- 
 {% paginate blog.articles by 5 %}

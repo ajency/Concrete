@@ -13,7 +13,7 @@
   {% for tag in tags %}
     {% assign index = forloop.index | minus: 1%}
     <div class="icon-box">
-      {% capture tag_slug %}{{ tag | replace: " ", "_" | downcase }}{% endcapture %}
+      {% capture tag_slug %}{{ tag | replace: " ", "_" }}{% endcapture %}
       {% assign img_svg = tag_slug | append: '.png'%}
       {% assign img_default = tag_slug | append: '.png'%}
       <script>

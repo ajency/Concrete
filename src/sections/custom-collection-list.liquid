@@ -20,8 +20,8 @@ function isImageValid(image_url){
               <ul class="nav
                {% if inline_list %}list--inline{% endif %}" id="filterList">
                 {%- for link in linklists[footer_linklist].links -%}
-                <li class="nav-item">
-                  <a href="{{ link.url }}" id="{{ link.title }}" class="collectionMenu"
+                <li class="nav-item ">
+                  <a href="{{ link.url }}" id="{{ link.title }}" class="collectionMenu {% if link.current %} current{% endif %}"
                      {% if link.current %} aria-current="page"{% endif %}
                     >
                     {{ link.title | escape }}
@@ -65,26 +65,19 @@ function isImageValid(image_url){
 
                           <div class="form-group tags categories">
                             {% for collection in collections %}
+                            {% unless collection.handle == 'men' %}
+              {% unless collection.handle == 'women' %}
+                            {% unless collection.handle == '50-plus' %}
+                            {% if collection.products.size >= 1 %}
                             <div class="checkbox"><label for="category-{{collection.id}}"><input type="checkbox" name="collection-name" rel="category-{{collection.id}}" id="category-{{collection.id}}"/> {{collection.title}} <span class="checkmark"></span> </label></div>
+                            {% endif %}
+                            {% endunless %}{% endunless %}{% endunless %}
                             {% endfor %}
                           </div>
                         </form>
                       </div>
                   </ul>
                 </div>
-<!--                 <span>Sort By</span>
-                <div class="dropdown">
-                  <div class="collSortBy">
-                    <button type="button" class="btn dropdown-toggle sort-select sort-closed" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select All</button>
-                    <ul class="sort-list dropdown-menu">
-                      <li class="sort-element dropdown-item" data-value="all"><span class="sort-link">All</span></li>
-                      <li class="sort-element dropdown-item" data-value="low-to-high"><span class="sort-link">Price: Low to High</span></li>
-                      <li class="sort-element dropdown-item" data-value="high-to-low"><span class="sort-link">Price: High to Low</span></li>
-                      <li class="sort-element dropdown-item" data-value="name-az"><span class="sort-link">Name A-Z</span></li>
-                      <li class="sort-element dropdown-item" data-value="name-za"><span class="sort-link">Name Z-A</span></li>
-                    </ul>
-                  </div>
-               </div> -->
             </div>
           </div>
         </div>
@@ -100,31 +93,43 @@ function isImageValid(image_url){
     {% include 'breadcrumbs' %}
       <div id="Collection">
         {% for collection in collections %}
+         {% unless collection.handle == 'men' %}
+         {% unless collection.handle == 'women' %}
+         {% unless collection.handle == '50-plus' %}
         <section class="grid-item col-12" id="category-{{collection.id}}">
           <ul class="results list-unstyled container ">
-            <li class="category-{{collection.id}}">
+             {% if collection.products.size >= 1 %}
+            <li id="{{collection.id}}" class="category-{{collection.id}}">
+             
               <section class="banner-section">
                 {% if collection.image != blank  %}
-                <div class="container banner-image deskMode">
+                <div class="container banner-image deskMode position-relative">
                       {%- assign image_object = collection.image  -%}
                       {% render 'responsive-image' with
                         image: image_object,
                         max_width: 480,
                         max_height: 480
                       %}
+                      <div class="bannerText">
+                        <h2 class="heading">
+                          {{ collection.title }}
+                        </h2>
+                     </div>
                   </div>
-                  <div class="container banner-image mobileMode">
-                    {% if collection.metafields.collection_meta.mobile_banner != blank %}
-                    <img src="{{collection.metafields.collection_meta.mobile_banner}}">
-                    {% else %}           
-                      {%- assign image_object = collection.image  -%}
-                      {% render 'responsive-image' with
-                        image: image_object,
-                        max_width: 480,
-                        max_height: 480
-                      %} 
-                    {% endif %}
-                  </div>
+                    <div class="container banner mobileMode" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
+                      <div class="bannerText">
+                        <h2 class="heading">
+                          {{ collection.title }}
+                        </h2>
+                        <p class="subText">{{collection.description}}
+                        </p>
+                      </div>
+                      {% if collection.metafields.collection_meta.banner_icon != blank %}
+                      <div class="bannerIcon">
+                          <img src="{{collection.metafields.collection_meta.banner_icon}}">
+                      </div>
+                      {% endif %}
+                    </div>
                 {% elsif collection.image == blank %}
                     <div class="container banner" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
                       <div class="bannerText">
@@ -145,12 +150,15 @@ function isImageValid(image_url){
               <div class="collection-url">
                 <a href="{{collection.url}}" class="link">View all</a>
               </div>
+             
               <section class="featured-products container ">
 
+ 
                   <div class="collection__products">
-                      {% for product in collection.products %}
-                       <div class="product-card">
-                           <!--<script>console.log({{ collection.products | json }});</script> -->
+                      {% for product in collection.products limit:4 %}
+   
+                       <div class="product-card" id='{{product.id}}'>
+                          
                         <a href="{{ product.url | within: collection }}" title="{{ product.title | escape }}">
                             <div class="product-image-card row" style="background: linear-gradient(270.17deg, #fff 1.03%, rgba(255, 255, 255, 0) 99.94%), {{collection.metafields.collection_meta.bg_color}};">
                               {% if product.featured_image != blank %}
@@ -218,109 +226,150 @@ function isImageValid(image_url){
                           </a>
                        </div>
 
-                      {% else %}
-                        {% if collection.handle == 'all' and collection.all_vendors.size == 0 and collection.all_types.size == 0 %}
-                          {% for i in (1..8) %}
-                            <a href="#">
-                              {% capture current %}{% cycle 1, 2, 3, 4, 5, 6 %}{% endcapture %}
-                              {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg placeholder-svg--small' }}
-                            </a>
-
-                            <p>
-                              <a href="#">{{ 'homepage.onboarding.product_title' | t }}</a>
-                            </p>
-
-                            <p>
-                              {{ 1999 | money }}
-                            </p>
-                          {% endfor %}
-                        {% else %}
-                          <p>{{ 'collections.general.no_matches' | t }}</p>
-                        {% endif %}
-
                       {% endfor %}
                     </div>
               </section>
+              
             </li>
+             {% endif %}
           </ul>
         </section>
+        {% endunless %}{% endunless %}{% endunless %}
         {% endfor %}
       </div>
     {% else %}
-  
+      <!-- ======= Sub header Section ======= -->
+    <section id="subheader" class="subheader"> 
+      <div class="container">
+        <div class="subheader-wrapper">
+          <div class="list-view">
+            <div>
+              {%- for block in section.blocks -%}
+              {%- assign footer_linklist = block.settings.menu -%}
+              {%- capture url -%}/collections/{{ collection.handle }}{%- endcapture -%}
+              <ul class="nav
+               {% if inline_list %}list--inline{% endif %}" id="filterList">
+                {%- for link in linklists[footer_linklist].links -%}
+                <li class="nav-item  {% if template contains 'collection' and collection.handle == '/collections/collection.handle' %} current {% endif %}">
+                  <a href="{{ link.url }}" id="{{ link.title }}" class="collectionMenu {% if link.current %} current{% endif %}"
+                      aria-current="page"
+                    >
+                    {{ link.title | escape }}
+                  </a>
+                  <ul class="collection-submenu">
+                    {% for childlink in link.links %}
+                    <li class="child-menu">
+                      <a href="{{ childlink.url }}">
+                        {{ childlink.title }}
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {%- endfor -%}
+              </ul>
+              {%- endfor -%}
+            </div>          
+          </div>
+          <div class="option-wrapper">
+            <div class="filters">
+              <div class="filters-option">
+                <span class="deskMode">Filter Health Goals</span>
+                  <div class="dropdown">
+                    <button type="button" class="btn dropdown-toggle  deskMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Show All</button>
+                    <button type="button" class="btn dropdown-toggle mobilefilter mobileMode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Filters{{ 'filter.svg' | asset_url | img_tag: 'filter', 'filter' }}</button>
+                      {% include 'collection-tag-filters' %}
+                  </div>
+              </div>
+            </div>
+            <div class="deskModeHeader">
+        {% include 'collection-sortby' %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   <div class="container">
       <div id="CollectionSection" data-section-id="{{ section.id }}" data-section-type="collection-template" data-grid-type="{{ section.settings.collection_products_grid }}">
-        {% include 'breadcrumbs' %}
-          <section class="banner-section">
-          {% if collection.image != blank  %}
-          <div class="container banner-image deskMode">
-            {%- assign image_object = collection.image  -%}
-            {% render 'responsive-image' with
-            image: image_object,
-            max_width: 480,
-            max_height: 480
-            %}
+          <div class="collectionSortName" style="display: flex; align-items: center;margin-bottom: 30px;justify-content: space-between; flex-wrap: wrap;">  
+              {% include 'breadcrumbs' %}
+              <div class="mobileModeHeader">
+                {% include 'collection-sortby' %}
+              </div>
           </div>
-          <div class="container banner-image mobileMode">
-            {% if collection.metafields.collection_meta.mobile_banner != blank %}
-              <img src="{{collection.metafields.collection_meta.mobile_banner}}">
-            {% else %}           
+          <section class="banner-section">
+            {% if collection.image != blank  %}
+            <div class="container banner-image deskMode position-relative">
               {%- assign image_object = collection.image  -%}
               {% render 'responsive-image' with
-              image: image_object,
+                        image: image_object,
               max_width: 480,
               max_height: 480
-              %} 
-            {% endif %}
-          </div>
-          {% elsif collection.image == blank %}
-          <div class="container banner" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
-            <div class="bannerText">
+              %}
+              <div class="bannerText">
+                {% if current_tags %}
+                {% for tag in collection.all_tags %}
+                  {% if current_tags contains tag %}
+                    <h2 class="heading">{{ current_tags }}</h2>               
+                  {% endif %}
+                {% endfor %}
+                {% else %}
                 <h2 class="heading">
-                  {{ collection.title }}
+                 {{ collection.title }}
                 </h2>
-                <p class="subText">{{collection.description}}
-                </p>
+                {% endif %}
+              </div>
             </div>
-            {% if collection.metafields.collection_meta.banner_icon != blank %}
+            <div class="container banner mobileMode" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
+              <div class="bannerText">
+                {% if current_tags %}
+                {% for tag in collection.all_tags %}
+                  {% if current_tags contains tag %}
+                    <h2 class="heading">{{ current_tags }}</h2>               
+                  {% endif %}
+                {% endfor %}
+                {% else %}
+                <h2 class="heading">
+                 {{ collection.title }}
+                </h2>
+                 <p class="subText">{{collection.description}}
+                </p>
+                {% endif %}
+              </div>
+              {% if collection.metafields.collection_meta.banner_icon != blank %}
               <div class="bannerIcon">
                 <img src="{{collection.metafields.collection_meta.banner_icon}}">
               </div>
-             {% endif %}
-          </div>
-          {% endif %}
-        </section>
-       {%- assign is_filter_by_available = false -%}
-      {%- if section.settings.tags_enable and collection.all_tags.size > 0 -%}
-      {%- assign is_filter_by_available = true -%}
-      {%- endif -%} 
-      <div class="filters-toolbar-wrapper{% if is_filter_by_available %} filters-toolbar--has-filter{% endif %}">
-          <div class="filters-toolbar">
-            <div class="filters-toolbar__item-wrapper">
-              {% if section.settings.sort_enable %}
-              <div class="filters-toolbar__item-child">
-                {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
-                <div class="filters-toolbar__input-wrapper select-group">
-                  <select name="sort_by" id="SortBy"
-                          class="filters-toolbar__input hidden"
-                          aria-describedby="a11y-refresh-page-message a11y-selection-message"
-                          data-default-sortby="{{ collection.default_sort_by }}"
-                          data-select-input
-                          >
-                    {%- for option in collection.sort_options -%}
-                      {% if option.value contains 'price-' or option.value contains 'title-ascending' or option.value contains 'title-descending' %}
-                        <option value="{{ option.value }}" {% if option.value == sort_by %}selected="selected"{% endif %}>{{ option.name }}</option>
-                      {% endif  %}
-                    {%- endfor -%}
-                  </select>
-                  {% include 'icon-chevron-down' %}
-                </div>
+              {% endif %}
+            </div>
+            {% elsif collection.image == blank %}
+            <div class="container banner" style="background-color:{{collection.metafields.collection_meta.bg_color}}">
+              <div class="bannerText">
+                  {% if current_tags %}
+                {% for tag in collection.all_tags %}
+                  {% if current_tags contains tag %}
+                    <h2 class="heading">{{ current_tags }}</h2>               
+                  {% endif %}
+                {% endfor %}
+                {% else %}
+                <h2 class="heading">
+                 {{ collection.title }}
+                </h2>
+                 <p class="subText">{{collection.description}}
+                </p>
+                {% endif %}
+              </div>
+              {% if collection.metafields.collection_meta.banner_icon != blank %}
+              <div class="bannerIcon">
+                <img src="{{collection.metafields.collection_meta.banner_icon}}">
               </div>
               {% endif %}
             </div>
-          </div>
-      </div>
+            {% endif %}
+          </section>
+       
         <section class="featured-products container ">
+
           <div class="collection__products">
             {% for product in collection.products %}
               <div class="product-card">
@@ -402,9 +451,8 @@ function isImageValid(image_url){
 
 {% schema %}
 {
-  "name": {
-    "en": "Collection pages"
-  },
+  "name": "Collection pages",
+   "max_blocks": 1,
   "settings": [
     {
       "type": "select",
@@ -467,20 +515,10 @@ function isImageValid(image_url){
       },
       "settings": [
         {
-          "type": "text",
-          "id": "title",
-          "label": {
-            "en": "Heading"
-          },
-          "default": {
-            "en": "Quick links"
-          }
-        },
-        {
           "type": "link_list",
           "id": "menu",
           "label": {
-            "en": "Menu"
+            "en": "Menus"
           },
           "default": "footer"
         }
@@ -541,16 +579,25 @@ function isImageValid(image_url){
 
   $('.clear').click(function() {
     $('.filtered-data').hide();
+    $('.banner-section').show();
+    $('.collection-url').show();
     $('div.tags').find('input:checked').each(function() {
       $('input[type="checkbox"]:checked').prop('checked',false);
     }); 
     $('.results > li').fadeIn('fast');
     _showCategories(categories);
+    var uri = window.location.toString();
+    if (uri.indexOf("?") > 0) {
+      var clean_uri = uri.substring(0, uri.indexOf("?"));
+      window.history.replaceState({}, document.title, clean_uri);
+    }
   });
     
   $(document).ready(function () {
     $("#checkAll").click(function () {
       $('input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+      $('.banner-section').show();
+      $('.collection-url').show();
     });
     $('.results > li').fadeIn('fast');
     _showCategories(categories);
@@ -561,50 +608,63 @@ function isImageValid(image_url){
         $('#checkAll').prop('checked',true);
         $('.results > li').fadeIn('fast');
           _showCategories(categories);
+        $('.banner-section').show();
+      $('.collection-url').show();
         }else{
-      $('#checkAll').prop('checked',false);
+        $('#checkAll').prop('checked',false);
+        $('.banner-section').show();
+      $('.collection-url').show();
       }
+      var uri = window.location.toString();
+        if (uri.indexOf("?") > 0) {
+            var clean_uri = uri.substring(0, uri.indexOf("?"));
+            window.history.replaceState({}, document.title, clean_uri);
+        }
     });
   }); 
   
-  $('.nav li.nav-item a').click(function() {
-    $('.filtered-data').hide();
-    $('div.tags').find('input:checked').each(function() {
-      $('input[type="checkbox"]:checked').prop('checked',false);
-    }); 
-  });
+//   $('.nav li.nav-item a').click(function() {
+//     $('.filtered-data').hide();
+//     $('div.tags').find('input:checked').each(function() {
+//       $('input[type="checkbox"]:checked').prop('checked',false);
+//     }); 
+//     $('.banner-section').show();
+//     $('.collection-url').show();
+//   });
     
-  $('.nav li.nav-item').find('a').click(function() {
-    var filterType =  $(this).attr('id');
-    $('.results li').hide();
-    var categories = [];
-    var categoriesId = [];
-    {% for collection in collections %}
-      var catname = "category-{{collection.id}}-{{collection.title}}";
-      categories.push(catname); 
-    {% endfor %}
-    {% for collection in collections %}
-      var catId = "category-{{collection.id}}";
-      categoriesId.push(catId); 
-    {% endfor %}
-      for (var x = 0; x < categories.length; x++) { 
-        for(var y = 0; y < categoriesId.length; y++){
-          if(filterType == 'All'){
-           $('.results > li').fadeIn('fast');
-           _showCategories(categoriesId);
-        } 
-        else if(categories[x] == categoriesId[y] + '-' + filterType){
-          $(".results > li." + categoriesId[y]).fadeIn();
-          $(categoriesId[y]).fadeIn();
-        }
-      }
-    }
-    var uri = window.location.toString();
-  if (uri.indexOf("?") > 0) {
-      var clean_uri = uri.substring(0, uri.indexOf("?"));
-      window.history.replaceState({}, document.title, clean_uri);
-  }
-  });    
+//   $('.nav li.nav-item').find('a').click(function() {
+//     var filterType =  $(this).attr('id');
+//     $('.results li').hide();
+//     var categories = [];
+//     var categoriesId = [];
+//     {% for collection in collections %}
+//       var catname = "category-{{collection.id}}-{{collection.title}}";
+//       categories.push(catname); 
+//     {% endfor %}
+//     {% for collection in collections %}
+//       var catId = "category-{{collection.id}}";
+//       categoriesId.push(catId); 
+//     {% endfor %}
+//       for (var x = 0; x < categories.length; x++) { 
+//         for(var y = 0; y < categoriesId.length; y++){
+//           if(filterType == 'All'){
+//            $('.results > li').fadeIn('fast');
+//            _showCategories(categoriesId);
+//         } 
+//         else if(categories[x] == categoriesId[y] + '-' + filterType){
+//           $(".results > li." + categoriesId[y]).fadeIn();
+//           $(categoriesId[y]).fadeIn();
+//         }
+//       }
+//     }
+//     var uri = window.location.toString();
+//  if (uri.indexOf("?") > 0) {
+//      var clean_uri = uri.substring(0, uri.indexOf("?"));
+//      window.history.replaceState({}, document.title, clean_uri);
+//  }
+//     $('.banner-section').show();
+//     $('.collection-url').show();
+//   });    
 
   (function ($) {
      $(document).ready(function(){
@@ -682,6 +742,8 @@ function isImageValid(image_url){
             var clean_uri = uri.substring(0, uri.indexOf("?"));
             window.history.replaceState({}, document.title, clean_uri);
         }
+        $('.banner-section').show();
+        $('.collection-url').show();
     });
   }
 
@@ -689,7 +751,8 @@ function isImageValid(image_url){
     $('#clearTags').remove();
     $('.tag span').remove();
     $('.filtered-data').hide();
-
+    $('.banner-section').show();
+    $('.collection-url').show();
        var text1 = [];
       var categoriesId = [];
             $('input[name="collection-name"]:checked').each(function(){
@@ -712,7 +775,7 @@ function isImageValid(image_url){
         $('.results > li').fadeIn('fast');
         _showCategories(categoriesId);
     
-            var uri = window.location.toString();
+      var uri = window.location.toString();
         if (uri.indexOf("?") > 0) {
             var clean_uri = uri.substring(0, uri.indexOf("?"));
             window.history.replaceState({}, document.title, clean_uri);
